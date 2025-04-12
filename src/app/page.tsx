@@ -6,23 +6,8 @@ import { db } from "../../firebase";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Parisienne, Marck_Script } from "next/font/google";
-import { ChevronRight, ChevronLeft, Laptop } from 'lucide-react'
+import { ChevronRight, ChevronLeft } from 'lucide-react'
 import Navbar from './components/navbar';
-
-
-// Proper font imports
-const parisienne = Parisienne({
-  weight: '400',
-  subsets: ['latin'],
-  display: 'swap',
-});
-
-const marck_Script = Marck_Script({
-  weight: '400',
-  subsets: ['latin'],
-  display: 'swap',
-});
 
 export default function Home() {
   const { user, isLoaded, isSignedIn } = useUser();
@@ -149,7 +134,7 @@ export default function Home() {
               <div className="space-y-4">
               <div className="border-l-4 border-[#365A27] pl-4 py-1">
                   <p className="italic text-black mb-2">
-                  "This app has made it so much easier to eat healthy at UMD while still enjoying the food. I've reached my fitness goals thanks to TerpMeals!"
+                  &quot;This app has made it so much easier to eat healthy at UMD while still enjoying the food. I&apos;ve reached my fitness goals thanks to TerpMeals!&quot;
                   </p>
                   <p className="text-right font-medium text-sm text-gray-700">
                   - Sarah, Junior, Computer Science
@@ -157,7 +142,7 @@ export default function Home() {
               </div>
               <div className="border-l-4 border-[#365A27] pl-4 py-1">
                   <p className="italic text-black mb-2">
-                  "As an athlete, I need to carefully track my nutrition. TerpMeals helps me find the right balance of protein and carbs at every dining hall."
+                  &quot;As an athlete, I need to carefully track my nutrition. TerpMeals helps me find the right balance of protein and carbs at every dining hall.&quot;
                   </p>
                   <p className="text-right font-medium text-sm text-gray-700">
                   - Michael, Sophomore, Kinesiology
