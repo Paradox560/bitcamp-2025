@@ -25,11 +25,12 @@ export function Navbar() {
                     <NavigationMenu>
                         <NavigationMenuList>
                             <NavigationMenuItem>
-                                <Link href="/" passHref>
-                                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                                        Home
-                                    </NavigationMenuLink>
-                                </Link>
+                                <NavigationMenuLink 
+                                    href="/"
+                                    className={navigationMenuTriggerStyle()}
+                                >
+                                    Home
+                                </NavigationMenuLink>
                             </NavigationMenuItem>
                             <SignedIn>
                                 <NavigationMenuItem>
@@ -87,11 +88,12 @@ export function Navbar() {
                                 </NavigationMenuItem>
                             </SignedIn>
                             <NavigationMenuItem>
-                                <Link href="/contact" passHref>
-                                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                                        About Us
-                                    </NavigationMenuLink>
-                                </Link>
+                                <NavigationMenuLink 
+                                    href="/contact"
+                                    className={navigationMenuTriggerStyle()}
+                                >
+                                    About Us
+                                </NavigationMenuLink>
                             </NavigationMenuItem>
                         </NavigationMenuList>
                     </NavigationMenu>

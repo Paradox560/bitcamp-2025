@@ -41,8 +41,15 @@ export default function Home() {
           lastName: user?.lastName,
           email: user?.primaryEmailAddress?.emailAddress,
           diningHall: "Yahentamitsi",
+          meals: [],
           allergens: [],
           specialDiets: [],
+          macros: {
+            calories: 0,
+            protein: "",
+            fats: "",
+            carbs: "",
+          }
         })
       }
     } catch (error) {
