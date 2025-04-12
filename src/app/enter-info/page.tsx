@@ -143,22 +143,6 @@ export default function EnterInformation() {
         <h1>Carbs(g)</h1>
       </div>
       <div
-        className={`absolute top-[22vh] left-3/4 transform -translate-x-1/2 w-20 h-20 rounded-full flex items-center justify-center border-8 ${
-          inputValueThree.trim() ? "border-blue-500" : "border-black"
-        }`}
-      >
-        <input
-          type="text"
-          value={inputValueThree}
-          onChange={handleInputChangeThree}
-          className="text-center w-48 bg-transparent text-black outline-none text-2xl"
-        />
-      </div>
-
-      <div className="absolute top-[22vh] left-13/16 transform -translate-x-1/2 items-center justify-center text-center">
-        <h1>Carbs(g)</h1>
-      </div>
-      <div
         className={`absolute top-[22vh] left-3/4 transform -translate-x-1/2 w-20 h-20 rounded-full flex items-center justify-center border-4 ${
           inputValueThree.trim() ? "border-blue-500" : "border-black"
         }`}
@@ -171,12 +155,11 @@ export default function EnterInformation() {
         />
       </div>
 
-
       <div className="absolute top-[40vh] left-43/64 transform -translate-x-1/2 items-center justify-center text-center">
         <h1>Fats(g)</h1>
       </div>
       <div
-        className={`absolute top-[40vh] left-20/32 transform -translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center border-2 ${
+        className={`absolute top-[40vh] left-20/32 transform -translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center border-3 ${
           inputValueFour.trim() ? "border-blue-500" : "border-black"
         }`}
       >
@@ -250,7 +233,7 @@ export default function EnterInformation() {
 </div>
 
 <div className="absolute top-[50vh] left-14/16 transform -translate-x-1/2 items-center justify-center text-center font-bold">
-        <h1>Step 3: Dining hall and Meals</h1>
+        <h1>Step 3: Dining Hall and Meals</h1>
 </div>
 
 <div className="absolute top-[60vh] left-13/16 -translate-x-1/2 flex flex-col space-y-2 items-center z-20">
