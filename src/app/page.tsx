@@ -40,6 +40,9 @@ export default function Home() {
           firstName: user?.firstName,
           lastName: user?.lastName,
           email: user?.primaryEmailAddress?.emailAddress,
+          diningHall: "Yahentamitsi",
+          allergens: [],
+          specialDiets: [],
         })
       }
     } catch (error) {
