@@ -39,6 +39,8 @@ interface IngredientList {
   ingredients: Ingredient[];
 }
 
+
+
 /*Switched them around to save time instead of actually switching them */
 const dining_halls = ["Breakfast", "Lunch", "Dinner"];
 const meals = ["Yahentamitsi", "251", "South"];
@@ -46,18 +48,11 @@ const meals = ["Yahentamitsi", "251", "South"];
 export default function EnterInformation() {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
-
-  const [inputValueCalories, setinputValueCalories] = useState<number | string>(
-    0
-  ); // Allow number or string (for empty input)
   const maxValue = 9999; // Define the max value for the input
 
-  const [inputValueProtein, setinputValueProtein] = useState<number | string>(
-    0
-  ); // Allow number or string (for empty input)
-
+  const [inputValueCalories, setinputValueCalories] = useState<number | string>(0); // Allow number or string (for empty input)
+  const [inputValueProtein, setinputValueProtein] = useState<number | string>(0); // Allow number or string (for empty input)
   const [inputValueCarbs, setinputValueCarbs] = useState<number | string>(0); // Allow number or string (for empty input)
-
   const [inputValueFat, setinputValueFat] = useState<number | string>(0); // Allow number or string (for empty input)
 
   const [clickedOne, setClickedOne] = useState(Array(8).fill(false));
@@ -70,6 +65,12 @@ export default function EnterInformation() {
 
   /*Dining hall*/
   const [clickedHall, setClickedHall] = useState([false, false, false]);
+
+  const [caloriesSelected, setcaloriesSelected] = useState<string>("");
+  const [hallSelected, setHallSelected] = useState<string>("");
+  const [mealSelected, setMealSelected] = useState<string>("");
+
+  const isFormValid = caloriesSelected !== "" && hallSelected !== "" && mealSelected !== "";
 
   const toggleClickOne = (index: number) => {
     const updated = [...clickedOne];
@@ -94,12 +95,11 @@ export default function EnterInformation() {
       if (!isNaN(parsedValue)) {
         if (parsedValue <= maxValue) {
           setinputValueCalories(parsedValue);
-        } else {
-          setinputValueCalories(maxValue);
         }
       }
+
+      setcaloriesSelected("valid");
     }
-    console.log(inputValueCalories);
   };
 
   const handleInputChangeProtein = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,12 +111,9 @@ export default function EnterInformation() {
       if (!isNaN(parsedValue)) {
         if (parsedValue <= maxValue) {
           setinputValueProtein(parsedValue);
-        } else {
-          setinputValueProtein(maxValue);
         }
       }
     }
-    console.log(inputValueProtein);
   };
 
   const handleInputChangeCarbs = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,12 +125,9 @@ export default function EnterInformation() {
       if (!isNaN(parsedValue)) {
         if (parsedValue <= maxValue) {
           setinputValueCarbs(parsedValue);
-        } else {
-          setinputValueCarbs(maxValue);
         }
       }
     }
-    console.log(inputValueCarbs);
   };
 
   const handleInputChangeFat = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -145,22 +139,21 @@ export default function EnterInformation() {
       if (!isNaN(parsedValue)) {
         if (parsedValue <= maxValue) {
           setinputValueFat(parsedValue);
-        } else {
-          setinputValueFat(maxValue);
         }
       }
     }
-    console.log(inputValueFat);
   };
 
   const handleClickMeal = (index: number) => {
     setClickedMeal(clickedMeal === index ? null : index);
+    setMealSelected("valid");
   };
 
   const handleClickHall = (index: number) => {
     const updatedClickedHall = [...clickedHall];
     updatedClickedHall[index] = !updatedClickedHall[index];
     setClickedHall(updatedClickedHall);
+    setHallSelected("valid");
   };
 
   const isNumber = (value: number | string): value is number => {
@@ -270,7 +263,7 @@ export default function EnterInformation() {
       </div>
       <br></br>
       <div className="absolute top-[15vh] left-1/2 transform -translate-x-1/2 items-center justify-center text-center">
-        <h1>Calories</h1>
+        <h1>Calories<span className="text-red-500">*</span></h1>
       </div>
 
       <div className="absolute top-[15vh] left-[10vw] transform -translate-x-1/2 items-center justify-center text-center font-bold">
@@ -278,11 +271,12 @@ export default function EnterInformation() {
       </div>
 
       <div
-        className={`absolute top-[20vh] left-1/2 transform -translate-x-1/2 w-48 h-48 rounded-full flex items-center justify-center border-8 z-10 ${
-          isNumber(inputValueCalories) && inputValueCalories > 0
-            ? "border-blue-500"
-            : "border-black"
+        className={`absolute top-[20vh] left-1/2 transform -translate-x-1/2 w-[19vw] h-[19vw] rounded-full flex items-center justify-center border-8 z-10 ${
+           isNumber(inputValueCalories) && inputValueCalories > 0  ? "border-blue-500" : "border-black"
         }`}
+        // className={`absolute top-[20vh] left-1/2 transform -translate-x-1/2 w-48 h-48 rounded-full flex items-center justify-center border-8 z-10 ${
+        //     isNumber(inputValueCalories) && inputValueCalories > 0  ? "border-blue-500" : "border-black"
+        //  }`}
       >
         <input
           type="number"
@@ -310,10 +304,11 @@ export default function EnterInformation() {
         <h1>Protein(g)</h1>
       </div>
       <div
-        className={`absolute top-[36vh] left-1/4 transform -translate-x-1/2 w-30 h-30 rounded-full flex items-center justify-center border-6 z-10 ${
-          isNumber(inputValueProtein) && inputValueProtein > 0
-            ? "border-blue-500"
-            : "border-black"
+        // className={`absolute top-[36vh] left-1/4 transform -translate-x-1/2 w-30 h-30 rounded-full flex items-center justify-center border-6 z-10 ${
+        //     isNumber(inputValueProtein) && inputValueProtein > 0  ? "border-blue-500" : "border-black"
+        // }`}
+        className={`absolute top-[36vh] left-1/4 transform -translate-x-1/2 w-[9vw] h-[9vw] rounded-full flex items-center justify-center border-5 z-10 ${
+            isNumber(inputValueProtein) && inputValueProtein > 0  ? "border-blue-500" : "border-black"
         }`}
       >
         <input
@@ -340,10 +335,11 @@ export default function EnterInformation() {
         <h1>Carbs(g)</h1>
       </div>
       <div
-        className={`absolute top-[22vh] left-3/4 transform -translate-x-1/2 w-20 h-20 rounded-full flex items-center justify-center border-4 ${
-          isNumber(inputValueCarbs) && inputValueCarbs > 0
-            ? "border-blue-500"
-            : "border-black"
+        // className={`absolute top-[22vh] left-3/4 transform -translate-x-1/2 w-20 h-20 rounded-full flex items-center justify-center border-4 ${
+        //     isNumber(inputValueCarbs) && inputValueCarbs > 0 ? "border-blue-500" : "border-black"
+        // }`}
+        className={`absolute top-[22vh] left-3/4 transform -translate-x-1/2 w-[7vw] h-[7vw] rounded-full flex items-center justify-center border-3 ${
+            isNumber(inputValueCarbs) && inputValueCarbs > 0 ? "border-blue-500" : "border-black"
         }`}
       >
         <input
@@ -370,11 +366,13 @@ export default function EnterInformation() {
         <h1>Fats(g)</h1>
       </div>
       <div
-        className={`absolute top-[40vh] left-20/32 transform -translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center border-3 ${
-          isNumber(inputValueCarbs) && inputValueCarbs > 0
-            ? "border-blue-500"
-            : "border-black"
+        // className={`absolute top-[40vh] left-20/32 transform -translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center border-3 ${
+        //     isNumber(inputValueFat) && inputValueFat > 0 ? "border-blue-500" : "border-black"
+        // }`}
+        className={`absolute top-[40vh] left-20/32 transform -translate-x-1/2 w-[5vw] h-[5vw] rounded-full flex items-center justify-center border-2 ${
+            isNumber(inputValueFat) && inputValueFat > 0 ? "border-blue-500" : "border-black"
         }`}
+        
       >
         <input
           type="number"
@@ -484,6 +482,7 @@ export default function EnterInformation() {
 
       <div className="fixed absolute top-[92vh] left-1/2 transform -translate-x-1/2">
         <Button
+          disabled={!isFormValid} 
           onClick={handleSubmit}
           className="w-20 h-10 flex items-center justify-center rounded-full text-white font-semibold"
         >
