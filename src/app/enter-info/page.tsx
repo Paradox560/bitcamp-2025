@@ -1,5 +1,5 @@
 'use client'
-import Link from "next/link"
+
 import { Button } from "@/components/ui/button"
 import { useState } from "react";
 
@@ -18,7 +18,21 @@ const diets = [
     { letter: "V", color: "bg-emerald-800", tooltip: "Vegetarian" },
     { letter: "VG", color: "bg-purple-500", tooltip: "Vegan" },
     { letter: "HF", color: "bg-cyan-500", tooltip: "Halal Friendly" },
-  ];
+];
+
+interface Ingredient {
+  name: string;
+  servingSize: string;
+  calories: number;
+  fats: number;
+  carbs: number;
+  protein: number;
+}
+
+interface IngredientList {
+  meal: string;
+  ingredients: Ingredient[];
+}
 
 /*Switched them around to save time instead of actually switching them */
 const dining_halls = ["Breakfast", "Lunch", "Dinner"]

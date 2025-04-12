@@ -78,7 +78,7 @@ export default function Home() {
           asChild
           className='ml-[3%] mt-[6%] w-44 h-18 bg-[#B37238] text-[#FDEDD6] text-2xl font-normal hover:bg-[#9c632f]'
         >
-          <Link href="/home">Home</Link>
+          <Link href="/enter-info">Step 1: Enter Macros</Link>
         </Button>
       </SignedIn>
       

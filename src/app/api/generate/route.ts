@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const genAI = new GoogleGenAI({ apiKey: process.env.GENAI_API_KEY });
+    const genAI = new GoogleGenAI({ apiKey: process.env.GEMENI_API_KEY });
     const { systemPrompt, userPrompts } = await req.json();
 
     // Create a chat instance with the system prompt
