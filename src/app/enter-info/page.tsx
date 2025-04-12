@@ -43,10 +43,22 @@ const meals = ["Yahentamitsi", "251", "South"]
 
 export default function EnterInformation() {
 
-    const [inputValueOne, setInputValueOne] = useState("");
-    const [inputValueTwo, setInputValueTwo] = useState("");
-    const [inputValueThree, setInputValueThree] = useState("");
-    const [inputValueFour, setInputValueFour] = useState("");
+    // const [inputValueCalories, setinputValueCalories] = useState("");
+    // const [inputValueCalories, setinputValueCalories] = useState<number>(0); // Set initial value as 0
+    const [inputValueCalories, setinputValueCalories] = useState<number | string>(0); // Allow number or string (for empty input)
+    const maxValue = 9999; // Define the max value for the input
+
+
+    // const [inputValueProtein, setinputValueProtein] = useState("");
+    const [inputValueProtein, setinputValueProtein] = useState<number | string>(0); // Allow number or string (for empty input)
+
+
+    // const [inputValueCarbs, setinputValueCarbs] = useState("");
+    const [inputValueCarbs, setinputValueCarbs] = useState<number | string>(0); // Allow number or string (for empty input)
+
+    // const [inputValueFat, setinputValueFat] = useState("");
+    const [inputValueFat, setinputValueFat] = useState<number | string>(0); // Allow number or string (for empty input)
+
 
     
     const [clickedOne, setClickedOne] = useState(Array(8).fill(false));
@@ -76,20 +88,119 @@ export default function EnterInformation() {
             };
 
   // Handle input change
-  const handleInputChangeOne = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValueOne(e.target.value);
+//   const handleInputChangeCalories = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     setinputValueCalories(e.target.value);
+//   };
+
+const handleInputChangeCalories = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Parse the value as a number to ensure it's treated as a number
+    // const value = e.target.value ? parseInt(e.target.value, 10) : 0; 
+    // setinputValueCalories(value);
+
+
+    const value = e.target.value;
+    // If the input value is empty, allow it to be cleared
+    if (value === "") {
+      setinputValueCalories("");
+    } else {
+      // Otherwise, parse the value as a number
+      const parsedValue = parseInt(value, 10);
+      if (!isNaN(parsedValue)) {
+        if (parsedValue <= maxValue) {
+            setinputValueCalories(parsedValue);
+          } else {
+            // Optionally handle the case where the value exceeds max
+            setinputValueCalories(maxValue);
+          }
+      }
+    }
   };
 
-  const handleInputChangeTwo = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValueTwo(e.target.value);
+//   const handleInputChangeProtein = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     setinputValueProtein(e.target.value);
+//   };
+
+
+
+const handleInputChangeProtein = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Parse the value as a number to ensure it's treated as a number
+    // const value = e.target.value ? parseInt(e.target.value, 10) : 0; 
+    // setinputValueCalories(value);
+
+
+    const value = e.target.value;
+    // If the input value is empty, allow it to be cleared
+    if (value === "") {
+      setinputValueProtein("");
+    } else {
+      // Otherwise, parse the value as a number
+      const parsedValue = parseInt(value, 10);
+      if (!isNaN(parsedValue)) {
+        if (parsedValue <= maxValue) {
+            setinputValueProtein(parsedValue);
+          } else {
+            // Optionally handle the case where the value exceeds max
+            setinputValueProtein(maxValue);
+          }
+      }
+    }
   };
 
-  const handleInputChangeThree = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValueThree(e.target.value);
+  const handleInputChangeCarbs = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Parse the value as a number to ensure it's treated as a number
+    // const value = e.target.value ? parseInt(e.target.value, 10) : 0; 
+    // setinputValueCalories(value);
+
+
+    const value = e.target.value;
+    // If the input value is empty, allow it to be cleared
+    if (value === "") {
+      setinputValueCarbs("");
+    } else {
+      // Otherwise, parse the value as a number
+      const parsedValue = parseInt(value, 10);
+      if (!isNaN(parsedValue)) {
+        if (parsedValue <= maxValue) {
+            setinputValueCarbs(parsedValue);
+          } else {
+            // Optionally handle the case where the value exceeds max
+            setinputValueCarbs(maxValue);
+          }
+      }
+    }
   };
 
-  const handleInputChangeFour = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValueFour(e.target.value);
+
+//   const handleInputChangeCarbs = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     setinputValueCarbs(e.target.value);
+//   };
+
+//   const handleInputChangeFat = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     setinputValueFat(e.target.value);
+//   };
+
+const handleInputChangeFat = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Parse the value as a number to ensure it's treated as a number
+    // const value = e.target.value ? parseInt(e.target.value, 10) : 0; 
+    // setinputValueCalories(value);
+
+
+    const value = e.target.value;
+    // If the input value is empty, allow it to be cleared
+    if (value === "") {
+      setinputValueFat("");
+    } else {
+      // Otherwise, parse the value as a number
+      const parsedValue = parseInt(value, 10);
+      if (!isNaN(parsedValue)) {
+        if (parsedValue <= maxValue) {
+            setinputValueFat(parsedValue);
+          } else {
+            // Optionally handle the case where the value exceeds max
+            setinputValueFat(maxValue);
+          }
+      }
+    }
   };
 
 
@@ -109,6 +220,10 @@ export default function EnterInformation() {
     setClickedHall(updatedClickedHall);
   };
 
+  const isNumber = (value: number | string): value is number => {
+    return typeof value === "number";
+  };
+
     return (
     <div>
       <div className="absolute top-[8vh] left-1/2 transform -translate-x-1/2 items-center justify-center text-center">
@@ -123,84 +238,139 @@ export default function EnterInformation() {
         <h1>Step 1: Macros</h1>
       </div>
       {/* Circle with fixed background color and dynamic border color */}
-      <div
+      {/* <div
         className={`absolute top-[20vh] left-1/2 transform -translate-x-1/2 w-48 h-48 rounded-full flex items-center justify-center border-8 z-10 ${
-          inputValueOne.trim() ? "border-blue-500" : "border-black"
+          inputValueCalories.trim() ? "border-blue-500" : "border-black"
         }`}
       >
         <input
           type="text"
-          value={inputValueOne}
-          onChange={handleInputChangeOne}
+          value={inputValueCalories}
+          onChange={handleInputChangeCalories}
           className="text-center w-48 bg-transparent text-black outline-none text-3xl"
         />
+      </div> */}
+      
+      <div className="absolute top-[15vh] left-[10vw] transform -translate-x-1/2 items-center justify-center text-center font-bold">
+        <h1>Step 1: Macros</h1>
       </div>
+
+      {/* Circle with number input inside */}
+      <div
+        className={`absolute top-[20vh] left-1/2 transform -translate-x-1/2 w-48 h-48 rounded-full flex items-center justify-center border-8 z-10 ${
+           isNumber(inputValueCalories) && inputValueCalories > 0  ? "border-blue-500" : "border-black"
+        }`}
+      >
+        <input
+          type="number"
+          value={inputValueCalories}
+          onChange={handleInputChangeCalories}
+          max={maxValue} // Maximum value
+          step = "1"
+          className="w-24 h-24 bg-transparent text-black text-3xl text-center outline-none"
+        />
+      </div>
+
+      {/* Global CSS to remove spinner/scrollbar for number input */}
+      <style>{`
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        input[type="number"] {
+          -moz-appearance: textfield;
+        }
+      `}</style>
 
       <div className="absolute top-[32vh] left-1/4 transform -translate-x-1/2 items-center justify-center text-center">
         <h1>Protein(g)</h1>
       </div>
       <div
         className={`absolute top-[36vh] left-1/4 transform -translate-x-1/2 w-30 h-30 rounded-full flex items-center justify-center border-6 z-10 ${
-          inputValueTwo.trim() ? "border-blue-500" : "border-black"
+            isNumber(inputValueProtein) && inputValueProtein > 0  ? "border-blue-500" : "border-black"
         }`}
       >
         <input
-          type="text"
-          value={inputValueTwo}
-          onChange={handleInputChangeTwo}
-          className="text-center w-48 bg-transparent text-black outline-none text-3xl"
+          type="number"
+          value={inputValueProtein}
+          onChange={handleInputChangeProtein}
+          className="w-24 h-24 bg-transparent text-black text-3xl text-center outline-none"
         />
       </div>
 
+      {/* Global CSS to remove spinner/scrollbar for number input */}
+      <style>{`
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
 
-      <div className="absolute top-[22vh] left-13/16 transform -translate-x-1/2 items-center justify-center text-center">
-        <h1>Carbs(g)</h1>
-      </div>
-      <div
-        className={`absolute top-[22vh] left-3/4 transform -translate-x-1/2 w-20 h-20 rounded-full flex items-center justify-center border-8 ${
-          inputValueThree.trim() ? "border-blue-500" : "border-black"
-        }`}
-      >
-        <input
-          type="text"
-          value={inputValueThree}
-          onChange={handleInputChangeThree}
-          className="text-center w-48 bg-transparent text-black outline-none text-2xl"
-        />
-      </div>
+        input[type="number"] {
+          -moz-appearance: textfield;
+        }
+      `}</style>
+
 
       <div className="absolute top-[22vh] left-13/16 transform -translate-x-1/2 items-center justify-center text-center">
         <h1>Carbs(g)</h1>
       </div>
       <div
         className={`absolute top-[22vh] left-3/4 transform -translate-x-1/2 w-20 h-20 rounded-full flex items-center justify-center border-4 ${
-          inputValueThree.trim() ? "border-blue-500" : "border-black"
+            isNumber(inputValueCarbs) && inputValueCarbs > 0 ? "border-blue-500" : "border-black"
         }`}
       >
         <input
-          type="text"
-          value={inputValueThree}
-          onChange={handleInputChangeThree}
-          className="text-center w-48 bg-transparent text-black outline-none text-2xl"
+          type="number"
+          value={inputValueCarbs}
+          onChange={handleInputChangeCarbs}
+          className="w-24 h-24 bg-transparent text-black text-3xl text-center outline-none"
         />
       </div>
 
+      {/* Global CSS to remove spinner/scrollbar for number input */}
+      <style>{`
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        input[type="number"] {
+          -moz-appearance: textfield;
+        }
+      `}</style>
 
       <div className="absolute top-[40vh] left-43/64 transform -translate-x-1/2 items-center justify-center text-center">
         <h1>Fats(g)</h1>
       </div>
       <div
-        className={`absolute top-[40vh] left-20/32 transform -translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center border-2 ${
-          inputValueFour.trim() ? "border-blue-500" : "border-black"
+        className={`absolute top-[40vh] left-20/32 transform -translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center border-3 ${
+            isNumber(inputValueCarbs) && inputValueCarbs > 0 ? "border-blue-500" : "border-black"
         }`}
       >
         <input
-          type="text"
-          value={inputValueFour}
-          onChange={handleInputChangeFour}
-          className="text-center w-48 bg-transparent text-black outline-none text-2xl"
+          type="number"
+          value={inputValueFat}
+          onChange={handleInputChangeFat}
+          className="w-24 h-24 bg-transparent text-black text-3xl text-center outline-none"
         />
       </div>
+
+      {/* Global CSS to remove spinner/scrollbar for number input */}
+      <style>{`
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        input[type="number"] {
+          -moz-appearance: textfield;
+        }
+      `}</style>
     
 
     <div className="absolute top-[70vh] left-[10vw] transform -translate-x-1/2 items-center justify-center text-center font-bold">
@@ -264,7 +434,7 @@ export default function EnterInformation() {
 </div>
 
 <div className="absolute top-[50vh] left-14/16 transform -translate-x-1/2 items-center justify-center text-center font-bold">
-        <h1>Step 3: Dining hall and Meals</h1>
+        <h1>Step 3: Dining Hall and Meals</h1>
 </div>
 
 <div className="absolute top-[60vh] left-13/16 -translate-x-1/2 flex flex-col space-y-2 items-center z-20">
