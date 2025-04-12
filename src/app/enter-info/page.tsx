@@ -10,7 +10,7 @@ import Loading from "@/app/components/loading";
 
 const allergens = [
   { letter: "D", color: "bg-blue-500", tooltip: "Dairy" },
-  { letter: "E", color: "bg-yellow-500", tooltip: "Eggs" },
+  { letter: "E", color: "bg-yellow-500", tooltip: "Egg" },
   { letter: "S", color: "bg-lime-500", tooltip: "Soy" },
   { letter: "G", color: "bg-amber-500", tooltip: "Gluten" },
   { letter: "N", color: "bg-red-500", tooltip: "Nuts" },
@@ -22,10 +22,10 @@ const allergens = [
 const diets = [
   { letter: "V", color: "bg-emerald-800", tooltip: "Vegetarian" },
   { letter: "VG", color: "bg-purple-500", tooltip: "Vegan" },
-  { letter: "HF", color: "bg-cyan-500", tooltip: "Halal Friendly" },
+  { letter: "HF", color: "bg-cyan-500", tooltip: "HalalFriendly" },
 ];
 
-interface Ingredient {
+interface Food {
   name: string;
   servingSize: string;
   calories: number;
@@ -34,30 +34,87 @@ interface Ingredient {
   protein: number;
 }
 
-interface IngredientList {
+interface FoodList {
   meal: string;
-  ingredients: Ingredient[];
+  ingredients: Food[];
 }
 
-/*Switched them around to save time instead of actually switching them */
+const systemPrompt = `You are a nutritionist and a culinary master. You are given a list of foods that your client can eat, 
+and each item in the list contains the food name, the serving size, the calories per serving, the fat per serving, the carbs
+per serving, and the protein per serving. Please create 1 meal from this given food list. You should calculate the total calories,
+total fat, total carbs, and the total protein of the meal based on the number of servings you’re recommending and the calories, fat,
+carbs, and protein per serving. You should create a name for this meal, a one sentence description, and specify each food you used
+in the meal, and the serving size, total calories, fat, carbs, and protein. We will also give you the number of calories, fat, carbs,
+and protein the user wants to eat for this meal. Please make your meal’s total calories, fat, carbs, and protein come as close to
+possible as what the user wants to eat with it serving as a lower bound. Please limit yourself to only using a maximum of 7 ingredients.
+For each food, specify how many calories, fat, carbs, and protein the total serving. You should return in the following JSON format:
+{
+  info: [{
+    “name”: str,
+    “description”: str
+    “total_calories”: number
+    “total_fat”: number
+    “total_carbs”: number
+    “total_fat”: number,
+    foods: [
+      {"food_name": str,
+      “serving_size”: str
+      “calories”: number
+      “fat”: number
+      “carbs”: number
+      “protein”: number},
+      {food_name: str,
+      “serving_size”: str
+      “calories”: number
+      “fat”: number
+      “carbs”: number
+      “protein”: number},
+      {"food_name": str,
+      “serving_size”: str
+      “calories”: number
+      “fat”: number
+      “carbs”: number
+      “protein”: number},
+      {"food_name": str,
+      “serving_size”: str
+      “calories”: number
+      “fat”: number
+      “carbs”: number
+      “protein”: number},
+      {"food_name": str,
+      “serving_size”: str
+      “calories”: number
+      “fat”: number
+      “carbs”: number
+      “protein”: number},
+      {"food_name": str,
+      “serving_size”: str
+      “calories”: number
+      “fat”: number
+      “carbs”: number
+      “protein”: number},
+      {"food_name": str,
+      “serving_size”: str
+      “calories”: number
+      “fat”: number
+      “carbs”: number
+      “protein”: number}
+    ]
+  ]
+}`;
+
+/* Switched them around to save time instead of actually switching them */
 const dining_halls = ["Breakfast", "Lunch", "Dinner"];
 const meals = ["Yahentamitsi", "251", "South"];
 
 export default function EnterInformation() {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
-
-  const [inputValueCalories, setinputValueCalories] = useState<number | string>(
-    0
-  ); // Allow number or string (for empty input)
   const maxValue = 9999; // Define the max value for the input
 
-  const [inputValueProtein, setinputValueProtein] = useState<number | string>(
-    0
-  ); // Allow number or string (for empty input)
-
+  const [inputValueCalories, setinputValueCalories] = useState<number | string>(0); // Allow number or string (for empty input)
+  const [inputValueProtein, setinputValueProtein] = useState<number | string>(0); // Allow number or string (for empty input)
   const [inputValueCarbs, setinputValueCarbs] = useState<number | string>(0); // Allow number or string (for empty input)
-
   const [inputValueFat, setinputValueFat] = useState<number | string>(0); // Allow number or string (for empty input)
 
   const [clickedOne, setClickedOne] = useState(Array(8).fill(false));
@@ -70,6 +127,12 @@ export default function EnterInformation() {
 
   /*Dining hall*/
   const [clickedHall, setClickedHall] = useState([false, false, false]);
+
+  const [caloriesSelected, setcaloriesSelected] = useState<string>("");
+  const [hallSelected, setHallSelected] = useState<string>("");
+  const [mealSelected, setMealSelected] = useState<string>("");
+
+  const isFormValid = caloriesSelected !== "" && hallSelected !== "" && mealSelected !== "";
 
   const toggleClickOne = (index: number) => {
     const updated = [...clickedOne];
@@ -94,12 +157,11 @@ export default function EnterInformation() {
       if (!isNaN(parsedValue)) {
         if (parsedValue <= maxValue) {
           setinputValueCalories(parsedValue);
-        } else {
-          setinputValueCalories(maxValue);
         }
       }
+
+      setcaloriesSelected("valid");
     }
-    console.log(inputValueCalories);
   };
 
   const handleInputChangeProtein = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,12 +173,9 @@ export default function EnterInformation() {
       if (!isNaN(parsedValue)) {
         if (parsedValue <= maxValue) {
           setinputValueProtein(parsedValue);
-        } else {
-          setinputValueProtein(maxValue);
         }
       }
     }
-    console.log(inputValueProtein);
   };
 
   const handleInputChangeCarbs = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,12 +187,9 @@ export default function EnterInformation() {
       if (!isNaN(parsedValue)) {
         if (parsedValue <= maxValue) {
           setinputValueCarbs(parsedValue);
-        } else {
-          setinputValueCarbs(maxValue);
         }
       }
     }
-    console.log(inputValueCarbs);
   };
 
   const handleInputChangeFat = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -145,22 +201,21 @@ export default function EnterInformation() {
       if (!isNaN(parsedValue)) {
         if (parsedValue <= maxValue) {
           setinputValueFat(parsedValue);
-        } else {
-          setinputValueFat(maxValue);
         }
       }
     }
-    console.log(inputValueFat);
   };
 
   const handleClickMeal = (index: number) => {
     setClickedMeal(clickedMeal === index ? null : index);
+    setMealSelected("valid");
   };
 
   const handleClickHall = (index: number) => {
     const updatedClickedHall = [...clickedHall];
     updatedClickedHall[index] = !updatedClickedHall[index];
     setClickedHall(updatedClickedHall);
+    setHallSelected("valid");
   };
 
   const isNumber = (value: number | string): value is number => {
@@ -210,16 +265,19 @@ export default function EnterInformation() {
         clickedHall.findIndex((selected) => selected) !== -1
           ? dining_halls[clickedHall.findIndex((selected) => selected)]
           : null;
-
+      
       const selectedMeal = clickedMeal !== null ? meals[clickedMeal] : null;
 
       await updateDoc(userDocRef, {
         allergens: selectedAllergens,
         specialDiets: selectedDiets,
-        diningHall: selectedDiningHall || "Yahentamitsi",
+        diningHall: selectedMeal || "Yahentamitsi",
+        meals: selectedDiningHall,
       });
 
       console.log("User data updated successfully");
+
+
     } catch (error) {
       console.error("Error updating user data:", error);
       // Use Sonner toast instead of alert
@@ -241,10 +299,46 @@ export default function EnterInformation() {
           const userData = userDoc.data();
 
           if (userData.macros) {
-            setinputValueCalories(userData.macros.calories || 0);
+            if (userData.macros.calories) {
+              setinputValueCalories(userData.macros.calories);
+              setcaloriesSelected("valid");
+            }
             setinputValueProtein(userData.macros.protein || 0);
             setinputValueCarbs(userData.macros.carbs || 0);
             setinputValueFat(userData.macros.fats || 0);
+          }
+
+          if (userData.allergens) {
+            const updatedClickedOne = allergens.map((_, index) =>
+              userData.allergens.includes(allergens[index].tooltip)
+            );
+            setClickedOne(updatedClickedOne);
+          }
+
+          if (userData.specialDiets) {
+            const updatedClickedTwo = diets.map((_, index) =>
+              userData.specialDiets.includes(diets[index].tooltip)
+            );
+            setClickedTwo(updatedClickedTwo);
+          }
+
+          if (userData.diningHall) {
+            if (userData.diningHall === "Yahentamitsi") {
+              setClickedMeal(0);
+            } else if (userData.diningHall === "251") {
+              setClickedMeal(1);
+            } else if (userData.diningHall === "South") {
+              setClickedMeal(2);
+            }
+            setHallSelected("valid");
+          }
+
+          if (userData.meals) {
+            const updatedClickedMeal = dining_halls.map((_, index) =>
+              userData.meals === dining_halls[index]
+            );
+            setMealSelected("valid");
+            setClickedHall(updatedClickedMeal);
           }
         }
       } catch (error) {
@@ -270,7 +364,7 @@ export default function EnterInformation() {
       </div>
       <br></br>
       <div className="absolute top-[15vh] left-1/2 transform -translate-x-1/2 items-center justify-center text-center">
-        <h1>Calories</h1>
+        <h1>Calories<span className="text-red-500">*</span></h1>
       </div>
 
       <div className="absolute top-[15vh] left-[10vw] transform -translate-x-1/2 items-center justify-center text-center font-bold">
@@ -278,11 +372,12 @@ export default function EnterInformation() {
       </div>
 
       <div
-        className={`absolute top-[20vh] left-1/2 transform -translate-x-1/2 w-48 h-48 rounded-full flex items-center justify-center border-8 z-10 ${
-          isNumber(inputValueCalories) && inputValueCalories > 0
-            ? "border-blue-500"
-            : "border-black"
+        className={`absolute top-[20vh] left-1/2 transform -translate-x-1/2 w-[19vw] h-[19vw] rounded-full flex items-center justify-center border-8 z-10 ${
+           isNumber(inputValueCalories) && inputValueCalories > 0  ? "border-blue-500" : "border-black"
         }`}
+        // className={`absolute top-[20vh] left-1/2 transform -translate-x-1/2 w-48 h-48 rounded-full flex items-center justify-center border-8 z-10 ${
+        //     isNumber(inputValueCalories) && inputValueCalories > 0  ? "border-blue-500" : "border-black"
+        //  }`}
       >
         <input
           type="number"
@@ -310,10 +405,11 @@ export default function EnterInformation() {
         <h1>Protein(g)</h1>
       </div>
       <div
-        className={`absolute top-[36vh] left-1/4 transform -translate-x-1/2 w-30 h-30 rounded-full flex items-center justify-center border-6 z-10 ${
-          isNumber(inputValueProtein) && inputValueProtein > 0
-            ? "border-blue-500"
-            : "border-black"
+        // className={`absolute top-[36vh] left-1/4 transform -translate-x-1/2 w-30 h-30 rounded-full flex items-center justify-center border-6 z-10 ${
+        //     isNumber(inputValueProtein) && inputValueProtein > 0  ? "border-blue-500" : "border-black"
+        // }`}
+        className={`absolute top-[36vh] left-1/4 transform -translate-x-1/2 w-[9vw] h-[9vw] rounded-full flex items-center justify-center border-5 z-10 ${
+            isNumber(inputValueProtein) && inputValueProtein > 0  ? "border-blue-500" : "border-black"
         }`}
       >
         <input
@@ -340,10 +436,11 @@ export default function EnterInformation() {
         <h1>Carbs(g)</h1>
       </div>
       <div
-        className={`absolute top-[22vh] left-3/4 transform -translate-x-1/2 w-20 h-20 rounded-full flex items-center justify-center border-4 ${
-          isNumber(inputValueCarbs) && inputValueCarbs > 0
-            ? "border-blue-500"
-            : "border-black"
+        // className={`absolute top-[22vh] left-3/4 transform -translate-x-1/2 w-20 h-20 rounded-full flex items-center justify-center border-4 ${
+        //     isNumber(inputValueCarbs) && inputValueCarbs > 0 ? "border-blue-500" : "border-black"
+        // }`}
+        className={`absolute top-[22vh] left-3/4 transform -translate-x-1/2 w-[7vw] h-[7vw] rounded-full flex items-center justify-center border-3 ${
+            isNumber(inputValueCarbs) && inputValueCarbs > 0 ? "border-blue-500" : "border-black"
         }`}
       >
         <input
@@ -370,11 +467,13 @@ export default function EnterInformation() {
         <h1>Fats(g)</h1>
       </div>
       <div
-        className={`absolute top-[40vh] left-20/32 transform -translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center border-3 ${
-          isNumber(inputValueCarbs) && inputValueCarbs > 0
-            ? "border-blue-500"
-            : "border-black"
+        // className={`absolute top-[40vh] left-20/32 transform -translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center border-3 ${
+        //     isNumber(inputValueFat) && inputValueFat > 0 ? "border-blue-500" : "border-black"
+        // }`}
+        className={`absolute top-[40vh] left-20/32 transform -translate-x-1/2 w-[5vw] h-[5vw] rounded-full flex items-center justify-center border-2 ${
+            isNumber(inputValueFat) && inputValueFat > 0 ? "border-blue-500" : "border-black"
         }`}
+        
       >
         <input
           type="number"
@@ -492,6 +591,7 @@ export default function EnterInformation() {
 
       <div className="fixed absolute top-[92vh] left-1/2 transform -translate-x-1/2">
         <Button
+          disabled={!isFormValid} 
           onClick={handleSubmit}
           className="w-20 h-10 flex items-center justify-center rounded-full text-white font-semibold"
         >
