@@ -10,7 +10,7 @@ import Loading from "@/app/components/loading";
 
 const allergens = [
   { letter: "D", color: "bg-blue-500", tooltip: "Dairy" },
-  { letter: "E", color: "bg-yellow-500", tooltip: "Eggs" },
+  { letter: "E", color: "bg-yellow-500", tooltip: "Egg" },
   { letter: "S", color: "bg-lime-500", tooltip: "Soy" },
   { letter: "G", color: "bg-amber-500", tooltip: "Gluten" },
   { letter: "N", color: "bg-red-500", tooltip: "Nuts" },
@@ -22,10 +22,10 @@ const allergens = [
 const diets = [
   { letter: "V", color: "bg-emerald-800", tooltip: "Vegetarian" },
   { letter: "VG", color: "bg-purple-500", tooltip: "Vegan" },
-  { letter: "HF", color: "bg-cyan-500", tooltip: "Halal Friendly" },
+  { letter: "HF", color: "bg-cyan-500", tooltip: "HalalFriendly" },
 ];
 
-interface Ingredient {
+interface Food {
   name: string;
   servingSize: string;
   calories: number;
@@ -34,12 +34,74 @@ interface Ingredient {
   protein: number;
 }
 
-interface IngredientList {
+interface FoodList {
   meal: string;
-  ingredients: Ingredient[];
+  ingredients: Food[];
 }
 
-
+const systemPrompt = `You are a nutritionist and a culinary master. You are given a list of foods that your client can eat, 
+and each item in the list contains the food name, the serving size, the calories per serving, the fat per serving, the carbs
+per serving, and the protein per serving. Please create 1 meal from this given food list. You should calculate the total calories,
+total fat, total carbs, and the total protein of the meal based on the number of servings you’re recommending and the calories, fat,
+carbs, and protein per serving. You should create a name for this meal, a one sentence description, and specify each food you used
+in the meal, and the serving size, total calories, fat, carbs, and protein. We will also give you the number of calories, fat, carbs,
+and protein the user wants to eat for this meal. Please make your meal’s total calories, fat, carbs, and protein come as close to
+possible as what the user wants to eat with it serving as a lower bound. Please limit yourself to only using a maximum of 7 ingredients.
+For each food, specify how many calories, fat, carbs, and protein the total serving. You should return in the following JSON format:
+{
+  info: [{
+    “name”: str,
+    “description”: str
+    “total_calories”: number
+    “total_fat”: number
+    “total_carbs”: number
+    “total_fat”: number,
+    foods: [
+      {"food_name": str,
+      “serving_size”: str
+      “calories”: number
+      “fat”: number
+      “carbs”: number
+      “protein”: number},
+      {food_name: str,
+      “serving_size”: str
+      “calories”: number
+      “fat”: number
+      “carbs”: number
+      “protein”: number},
+      {"food_name": str,
+      “serving_size”: str
+      “calories”: number
+      “fat”: number
+      “carbs”: number
+      “protein”: number},
+      {"food_name": str,
+      “serving_size”: str
+      “calories”: number
+      “fat”: number
+      “carbs”: number
+      “protein”: number},
+      {"food_name": str,
+      “serving_size”: str
+      “calories”: number
+      “fat”: number
+      “carbs”: number
+      “protein”: number},
+      {"food_name": str,
+      “serving_size”: str
+      “calories”: number
+      “fat”: number
+      “carbs”: number
+      “protein”: number},
+      {"food_name": str,
+      “serving_size”: str
+      “calories”: number
+      “fat”: number
+      “carbs”: number
+      “protein”: number}
+    ]
+  ]
+}`;
 
 /*Switched them around to save time instead of actually switching them */
 const dining_halls = ["Breakfast", "Lunch", "Dinner"];
