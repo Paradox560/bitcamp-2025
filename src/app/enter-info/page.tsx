@@ -103,7 +103,7 @@ For each food, specify how many calories, fat, carbs, and protein the total serv
   ]
 }`;
 
-/*Switched them around to save time instead of actually switching them */
+/* Switched them around to save time instead of actually switching them */
 const dining_halls = ["Breakfast", "Lunch", "Dinner"];
 const meals = ["Yahentamitsi", "251", "South"];
 
@@ -265,16 +265,19 @@ export default function EnterInformation() {
         clickedHall.findIndex((selected) => selected) !== -1
           ? dining_halls[clickedHall.findIndex((selected) => selected)]
           : null;
-
+      
       const selectedMeal = clickedMeal !== null ? meals[clickedMeal] : null;
 
       await updateDoc(userDocRef, {
         allergens: selectedAllergens,
         specialDiets: selectedDiets,
-        diningHall: selectedDiningHall || "Yahentamitsi",
+        diningHall: selectedMeal || "Yahentamitsi",
+        meals: selectedDiningHall,
       });
 
       console.log("User data updated successfully");
+
+
     } catch (error) {
       console.error("Error updating user data:", error);
       // Use Sonner toast instead of alert
@@ -296,10 +299,46 @@ export default function EnterInformation() {
           const userData = userDoc.data();
 
           if (userData.macros) {
-            setinputValueCalories(userData.macros.calories || 0);
+            if (userData.macros.calories) {
+              setinputValueCalories(userData.macros.calories);
+              setcaloriesSelected("valid");
+            }
             setinputValueProtein(userData.macros.protein || 0);
             setinputValueCarbs(userData.macros.carbs || 0);
             setinputValueFat(userData.macros.fats || 0);
+          }
+
+          if (userData.allergens) {
+            const updatedClickedOne = allergens.map((_, index) =>
+              userData.allergens.includes(allergens[index].tooltip)
+            );
+            setClickedOne(updatedClickedOne);
+          }
+
+          if (userData.specialDiets) {
+            const updatedClickedTwo = diets.map((_, index) =>
+              userData.specialDiets.includes(diets[index].tooltip)
+            );
+            setClickedTwo(updatedClickedTwo);
+          }
+
+          if (userData.diningHall) {
+            if (userData.diningHall === "Yahentamitsi") {
+              setClickedMeal(0);
+            } else if (userData.diningHall === "251") {
+              setClickedMeal(1);
+            } else if (userData.diningHall === "South") {
+              setClickedMeal(2);
+            }
+            setHallSelected("valid");
+          }
+
+          if (userData.meals) {
+            const updatedClickedMeal = dining_halls.map((_, index) =>
+              userData.meals === dining_halls[index]
+            );
+            setMealSelected("valid");
+            setClickedHall(updatedClickedMeal);
           }
         }
       } catch (error) {
