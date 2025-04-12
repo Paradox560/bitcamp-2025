@@ -451,7 +451,15 @@ export default function EnterInformation() {
       </div>
 
       <div className="absolute top-[50vh] left-14/16 transform -translate-x-1/2 items-center justify-center text-center font-bold">
-        <h1>Step 3: Dining Hall and Meals</h1>
+              <h1>Step 3</h1>
+      </div>
+
+      <div className="absolute top-[55vh] left-13/16 transform -translate-x-1/2 items-center justify-center text-center font-bold">
+              <h1>Dining Hall<span className="text-red-500">*</span></h1>
+      </div>
+
+      <div className="absolute top-[55vh] left-15/16 transform -translate-x-1/2 items-center justify-center text-center font-bold">
+              <h1>Meals<span className="text-red-500">*</span></h1>
       </div>
 
       <div className="absolute top-[60vh] left-13/16 -translate-x-1/2 flex flex-col space-y-2 items-center z-20">
