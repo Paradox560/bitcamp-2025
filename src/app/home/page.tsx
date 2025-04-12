@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from 'react';
 import { Button } from "@/components/ui/button"
 import { ChevronRight, ChevronLeft, Laptop } from 'lucide-react'
 import Navbar from '../components/navbar';
@@ -8,7 +7,6 @@ import Navbar from '../components/navbar';
 
 export default function Page() {
     return (
-        // FDC070 D56C6C FF8072 FDA670
         <div className="bg-[#E8F5E9] flex flex-col justify-center">
             <Navbar/>
             <div className = 'mt-5'>
@@ -35,9 +33,9 @@ export default function Page() {
             </div>
 
             <div className='flex items-center justify-center -mt-14'>
-                <button className="w-80 bg-[#E13318] text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-red-800 transition duration-200 mb-10">
+                <Button className="w-80 bg-[#E13318] text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-red-800 transition duration-200 mb-10">
                     Set Your Goals
-                </button>
+                </Button>
             </div>
 
             <div className="flex flex-row justify-evenly gap-4 px-4">
