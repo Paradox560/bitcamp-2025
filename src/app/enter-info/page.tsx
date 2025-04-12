@@ -20,8 +20,9 @@ const diets = [
     { letter: "HF", color: "bg-cyan-500", tooltip: "Halal Friendly" },
   ];
 
-const meals = ["Breakfast", "Lunch", "Dinner"]
-const dining_halls = ["Yahentamitsi", "251", "South"]
+/*Switched them around to save time instead of actually switching them */
+const dining_halls = ["Breakfast", "Lunch", "Dinner"]
+const meals = ["Yahentamitsi", "251", "South"]
 
 
 
@@ -249,7 +250,7 @@ export default function EnterInformation() {
 </div>
 
 <div className="absolute top-[50vh] left-14/16 transform -translate-x-1/2 items-center justify-center text-center font-bold">
-        <h1>Step 3: Meal and Dining Halls</h1>
+        <h1>Step 3: Dining hall and Meals</h1>
 </div>
 
 <div className="absolute top-[60vh] left-13/16 -translate-x-1/2 flex flex-col space-y-2 items-center z-20">
