@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import {doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { Toaster, toast } from "sonner";
 import Loading from "@/app/components/loading";
@@ -55,74 +55,8 @@ interface Food {
   protein: number;
 }
 
-interface FoodList {
-  meal: string;
-  ingredients: Food[];
-}
 
-const systemPrompt = `You are a nutritionist and a culinary master. You are given a list of foods that your client can eat, 
-and each item in the list contains the food name, the serving size, the calories per serving, the fat per serving, the carbs
-per serving, and the protein per serving. Please create 1 meal from this given food list. You should calculate the total calories,
-total fat, total carbs, and the total protein of the meal based on the number of servings you’re recommending and the calories, fat,
-carbs, and protein per serving. You should create a name for this meal, a one sentence description, and specify each food you used
-in the meal, and the serving size, total calories, fat, carbs, and protein. We will also give you the number of calories, fat, carbs,
-and protein the user wants to eat for this meal. Please make your meal’s total calories, fat, carbs, and protein come as close to
-possible as what the user wants to eat with it serving as a lower bound. Please limit yourself to only using a maximum of 7 ingredients.
-For each food, specify how many calories, fat, carbs, and protein the total serving. You should return in the following JSON format:
-{
-  info: [{
-    “name”: str,
-    “description”: str
-    “total_calories”: number
-    “total_fat”: number
-    “total_carbs”: number
-    “total_fat”: number,
-    foods: [
-      {"food_name": str,
-      “serving_size”: str
-      “calories”: number
-      “fat”: number
-      “carbs”: number
-      “protein”: number},
-      {food_name: str,
-      “serving_size”: str
-      “calories”: number
-      “fat”: number
-      “carbs”: number
-      “protein”: number},
-      {"food_name": str,
-      “serving_size”: str
-      “calories”: number
-      “fat”: number
-      “carbs”: number
-      “protein”: number},
-      {"food_name": str,
-      “serving_size”: str
-      “calories”: number
-      “fat”: number
-      “carbs”: number
-      “protein”: number},
-      {"food_name": str,
-      “serving_size”: str
-      “calories”: number
-      “fat”: number
-      “carbs”: number
-      “protein”: number},
-      {"food_name": str,
-      “serving_size”: str
-      “calories”: number
-      “fat”: number
-      “carbs”: number
-      “protein”: number},
-      {"food_name": str,
-      “serving_size”: str
-      “calories”: number
-      “fat”: number
-      “carbs”: number
-      “protein”: number}
-    ]
-  ]
-}`;
+
 
 /* Switched them around to save time instead of actually switching them */
 const dining_halls = ["Breakfast", "Lunch", "Dinner"];

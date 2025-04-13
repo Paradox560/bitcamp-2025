@@ -13,7 +13,7 @@ const teamMembers = [
   },
   {
     name: "Jayant Kammula",
-    title: "Backend Developer",
+    title: "Full Stack Developer",
     description: "University of Maryland, College Park",
     linkName: "LinkedIn",
     professionalLink: "https://www.linkedin.com/in/jayantkammula",

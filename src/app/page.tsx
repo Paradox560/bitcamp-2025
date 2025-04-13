@@ -1,13 +1,13 @@
 'use client'
 
 import { SignedOut, SignedIn, useUser } from "@clerk/nextjs";
-import { collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { collection, doc, deleteDoc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Montserrat, Jost, Nunito } from 'next/font/google'
-import { ChevronRight, ChevronLeft, Laptop } from 'lucide-react';
+import { ChevronRight, ChevronLeft } from 'lucide-react';
 // import Navbar from './components/navbar';
 
 // Proper font imports
@@ -41,28 +41,53 @@ export default function Home() {
 
   const createUser = async () => {
     try {
+      // Reference to the "users" collection
       const collectionRef = collection(db, 'users');
+      // Document reference for the specific user using user id
       const docRef = doc(collectionRef, user?.id);
       const docSnap = await getDoc(docRef);
-    
+  
       if (docSnap.exists()) {
         console.log("User already exists in db.");
       } else {
         console.log("User does not exist in db. Creating a new user in db.");
+  
+        // Create the user document
         await setDoc(docRef, {
           firstName: user?.firstName,
           lastName: user?.lastName,
           email: user?.primaryEmailAddress?.emailAddress,
           diningHall: "Yahentamitsi",
+          meals: [],
           allergens: [],
           specialDiets: [],
+          macros: {
+            calories: 0,
+            protein: "",
+            fats: "",
+            carbs: "",
+          }
         });
+    
+        // Subcollection: Breakfast
+        const breakfastRef = collection(docRef, 'Breakfast');
+        await setDoc(doc(breakfastRef, 'Meal 1'), { created: true });
+        await deleteDoc(doc(breakfastRef, 'Meal 1'));
+  
+        // Subcollection: Lunch
+        const lunchRef = collection(docRef, 'Lunch');
+        await setDoc(doc(lunchRef, 'Meal 1'), { created: true });
+        await deleteDoc(doc(lunchRef, 'Meal 1'));
+  
+        // Subcollection: Dinner
+        const dinnerRef = collection(docRef, 'Dinner');
+        await setDoc(doc(dinnerRef, 'Meal 1'), { created: true });
+        await deleteDoc(doc(dinnerRef, 'Meal 1'));
+  
+        console.log("User and meal subcollections created successfully.");
       }
     } catch (error) {
-      let message;
-      if (error instanceof Error) message = error.message;
-      else message = String(error);
-      console.error("Error adding user to db: " + message);
+      console.error("Error creating user: ", error);
     }
   };
 
@@ -217,7 +242,7 @@ export default function Home() {
         <div className={`${nunito.className} space-y-4`}>
           <div className="border-l-4 border-[#365A27] pl-4 py-1">
             <p className="italic text-black mb-2">
-              "This app has made it so much easier to eat healthy at UMD while still enjoying the food. I've reached my fitness goals thanks to MacroTerpitech!"
+              &quot;This app has made it so much easier to eat healthy at UMD while still enjoying the food. I&apos;ve reached my fitness goals thanks to MacroTerpitech!&quot;
             </p>
             <p className="text-right font-medium text-sm text-gray-700">
               - Suvrath, Junior, Computer Science
@@ -225,7 +250,7 @@ export default function Home() {
           </div>
           <div className="border-l-4 border-[#365A27] pl-4 py-1">
             <p className="italic text-black mb-2">
-              "As an athlete, I need to carefully track my nutrition. MacroTerpitech helps me find the right balance of protein and carbs at every dining hall."
+              &quot;As an athlete, I need to carefully track my nutrition. MacroTerpitech helps me find the right balance of protein and carbs at every dining hall.&quot;
             </p>
             <p className="text-right font-medium text-sm text-gray-700">
               - Michael, Sophomore, Kinesiology
@@ -236,3 +261,4 @@ export default function Home() {
     </div>
   );
 }
+
