@@ -3,12 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const genAI = new GoogleGenAI({ apiKey: process.env.GEMENI_API_KEY });
+    const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const { systemPrompt, userPrompts } = await req.json();
 
     // Create a chat instance with the system prompt
     const chat = genAI.chats.create({
-      model: "gemini-2.5-pro-preview-03-25",
+      model: "gemini-2.0-flash",
       history: [
         {
           role: "user",

@@ -28,15 +28,25 @@ const diets = [
 interface Food {
   name: string;
   servingSize: string;
-  calories: number;
-  fats: number;
-  carbs: number;
-  protein: number;
+  calories: string;
+  fats: string;
+  carbs: string;
+  protein: string;
 }
 
 interface FoodList {
   meal: string;
   ingredients: Food[];
+}
+
+interface Meal {
+  name: string;
+  description: string;
+  total_calories: number;
+  total_fat: number;
+  total_carbs: number;
+  total_protein: number;
+  foods: Food[];
 }
 
 const systemPrompt = `You are a nutritionist and a culinary master. You are given a list of foods that your client can eat, 
@@ -112,8 +122,12 @@ export default function EnterInformation() {
   const [loading, setLoading] = useState(false);
   const maxValue = 9999; // Define the max value for the input
 
-  const [inputValueCalories, setinputValueCalories] = useState<number | string>(0); // Allow number or string (for empty input)
-  const [inputValueProtein, setinputValueProtein] = useState<number | string>(0); // Allow number or string (for empty input)
+  const [inputValueCalories, setinputValueCalories] = useState<number | string>(
+    0
+  ); // Allow number or string (for empty input)
+  const [inputValueProtein, setinputValueProtein] = useState<number | string>(
+    0
+  ); // Allow number or string (for empty input)
   const [inputValueCarbs, setinputValueCarbs] = useState<number | string>(0); // Allow number or string (for empty input)
   const [inputValueFat, setinputValueFat] = useState<number | string>(0); // Allow number or string (for empty input)
 
@@ -133,8 +147,10 @@ export default function EnterInformation() {
   const [mealSelected, setMealSelected] = useState<string>("");
 
   const [foodList, setFoodList] = useState<FoodList[]>();
+  const [mealList, setMealList] = useState<Meal[]>([]);
 
-  const isFormValid = caloriesSelected !== "" && hallSelected !== "" && mealSelected !== "";
+  const isFormValid =
+    caloriesSelected !== "" && hallSelected !== "" && mealSelected !== "";
 
   const toggleClickOne = (index: number) => {
     const updated = [...clickedOne];
@@ -224,9 +240,77 @@ export default function EnterInformation() {
     return typeof value === "number";
   };
 
+  // Add this function in your page.tsx file, before your return statement
+  const generateMeal = async () => {
+    if (!foodList || foodList.length === 0) {
+      toast.error("No food data available. Please try again.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const userPrompts = [];
+      const len = foodList.length;
+      console.log("fl" + foodList);
+      for (let i = 0; i < len; i++) {
+        const f = foodList[i].ingredients;
+        // Prepare user prompt with foodList and desired macros
+        // If one of the inputs is empty, do not include in user prompt
+        let userPrompt = `
+        Here's my food list: ${JSON.stringify(f)}
+      
+        Please create a meal with these nutritional targets:
+        - Calories: ${Number(inputValueCalories) / len}`;
+
+        if (inputValueProtein) {
+          userPrompt += `\n- Protein: ${Number(inputValueProtein) / len}`;
+          console.log("hi");
+          console.log(inputValueProtein);
+        }
+
+        if (inputValueCarbs) {
+          userPrompt += `\n- Carbs: ${Number(inputValueCarbs) / len}`;
+        }
+
+        if (inputValueFat) {
+          userPrompt += `\n- Fat: ${Number(inputValueFat) / len}`;
+        }
+
+        console.log(userPrompts.push(userPrompt));
+      }
+
+      console.log("User Prompt" + userPrompts);
+
+      // Call the API endpoint
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          systemPrompt: systemPrompt,
+          userPrompts: userPrompts,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Data" + data);
+      setMealList(data);
+      console.log(mealList);
+      console.log("Meal generated successfully");
+      toast.success("Meal generated successfully!");
+    } catch (error) {
+      console.error("Error generating meal:", error);
+      toast.error("Failed to generate meal plan. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!user?.id) {
-      // Use Sonner toast instead of alert
       toast.error("You must be logged in to save your macros");
       return;
     }
@@ -241,6 +325,7 @@ export default function EnterInformation() {
         throw new Error("User document not found in database");
       }
 
+      // Update macros in Firestore (unchanged from your code)
       const updatedMacros = {
         calories: inputValueCalories,
         protein: inputValueProtein,
@@ -252,9 +337,9 @@ export default function EnterInformation() {
         macros: updatedMacros,
       });
 
-      // Use Sonner toast instead of alert
       toast.success("Your macros have been updated successfully!");
 
+      // Get selected preferences (unchanged from your code)
       const selectedAllergens = allergens
         .filter((_, index) => clickedOne[index])
         .map((allergen) => allergen.tooltip);
@@ -263,11 +348,9 @@ export default function EnterInformation() {
         .filter((_, index) => clickedTwo[index])
         .map((diet) => diet.tooltip);
 
-      const selectedDiningHall =
-        clickedHall.findIndex((selected) => selected) !== -1
-          ? dining_halls[clickedHall.findIndex((selected) => selected)]
-          : null;
-      
+      const selectedDiningHall = dining_halls.filter(
+        (_, index) => clickedHall[index]
+      );
       const selectedMeal = clickedMeal !== null ? meals[clickedMeal] : null;
 
       await updateDoc(userDocRef, {
@@ -282,14 +365,56 @@ export default function EnterInformation() {
       const response = await fetch("/api/scrape", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ allergens: selectedAllergens, diningHall: selectedMeal, diets: selectedDiets, meals: selectedDiningHall }),
+        body: JSON.stringify({
+          allergens: selectedAllergens,
+          diningHall: selectedMeal,
+          diets: selectedDiets,
+          meals: selectedDiningHall,
+        }),
       });
 
-      const data = await response.json();
-      setFoodList(data);
+      const responseData = await response.json();
+      console.log("Scrape response:", responseData);
+
+      if (!responseData.data) {
+        toast.error("No food data available");
+        setLoading(false);
+        return;
+      }
+
+      // Transform the data to match our FoodList interface
+      const transformedFoodList: FoodList[] = Object.entries(
+        responseData.data
+      ).map(([meal, ingredients]) => {
+        // Transform ingredients data to match the Food interface
+        const formattedIngredients: Food[] = (ingredients as any[][]).map(
+          (item) => {
+            return {
+              name: item[0] || "Unknown",
+              servingSize: item[1] || "1 serving",
+              calories: item[2] || "0",
+              fats: item[3] || "0",
+              carbs: item[4] || "0",
+              protein: item[5] || "0",
+            };
+          }
+        );
+
+        return {
+          meal: meal,
+          ingredients: formattedIngredients,
+        };
+      });
+
+      console.log("Transformed food list:", transformedFoodList);
+      setFoodList(transformedFoodList);
+
+      // Wait a moment to ensure the foodList state is updated
+      setTimeout(() => {
+        generateMeal();
+      }, 1000);
     } catch (error) {
       console.error("Error updating user data:", error);
-      // Use Sonner toast instead of alert
       toast.error("Failed to update your information. Please try again.");
     } finally {
       setLoading(false);
@@ -343,8 +468,8 @@ export default function EnterInformation() {
           }
 
           if (userData.meals) {
-            const updatedClickedMeal = dining_halls.map((_, index) =>
-              userData.meals === dining_halls[index]
+            const updatedClickedMeal = dining_halls.map(
+              (_, index) => userData.meals === dining_halls[index]
             );
             setMealSelected("valid");
             setClickedHall(updatedClickedMeal);
@@ -364,16 +489,15 @@ export default function EnterInformation() {
 
   return (
     <div>
-      {/* Add Toaster component to render toast notifications */}
       <Toaster position="top-center" />
-
-      {/* Rest of your UI remains the same */}
       <div className="absolute top-[8vh] left-1/2 transform -translate-x-1/2 items-center justify-center text-center">
         <h1>Please enter the following information</h1>
       </div>
       <br></br>
       <div className="absolute top-[15vh] left-1/2 transform -translate-x-1/2 items-center justify-center text-center">
-        <h1>Calories<span className="text-red-500">*</span></h1>
+        <h1>
+          Calories<span className="text-red-500">*</span>
+        </h1>
       </div>
 
       <div className="absolute top-[15vh] left-[10vw] transform -translate-x-1/2 items-center justify-center text-center font-bold">
@@ -382,11 +506,10 @@ export default function EnterInformation() {
 
       <div
         className={`absolute top-[20vh] left-1/2 transform -translate-x-1/2 w-[19vw] h-[19vw] rounded-full flex items-center justify-center border-8 z-10 ${
-           isNumber(inputValueCalories) && inputValueCalories > 0  ? "border-blue-500" : "border-black"
+          isNumber(inputValueCalories) && inputValueCalories > 0
+            ? "border-blue-500"
+            : "border-black"
         }`}
-        // className={`absolute top-[20vh] left-1/2 transform -translate-x-1/2 w-48 h-48 rounded-full flex items-center justify-center border-8 z-10 ${
-        //     isNumber(inputValueCalories) && inputValueCalories > 0  ? "border-blue-500" : "border-black"
-        //  }`}
       >
         <input
           type="number"
@@ -414,11 +537,10 @@ export default function EnterInformation() {
         <h1>Protein(g)</h1>
       </div>
       <div
-        // className={`absolute top-[36vh] left-1/4 transform -translate-x-1/2 w-30 h-30 rounded-full flex items-center justify-center border-6 z-10 ${
-        //     isNumber(inputValueProtein) && inputValueProtein > 0  ? "border-blue-500" : "border-black"
-        // }`}
         className={`absolute top-[36vh] left-1/4 transform -translate-x-1/2 w-[9vw] h-[9vw] rounded-full flex items-center justify-center border-5 z-10 ${
-            isNumber(inputValueProtein) && inputValueProtein > 0  ? "border-blue-500" : "border-black"
+          isNumber(inputValueProtein) && inputValueProtein > 0
+            ? "border-blue-500"
+            : "border-black"
         }`}
       >
         <input
@@ -445,11 +567,10 @@ export default function EnterInformation() {
         <h1>Carbs(g)</h1>
       </div>
       <div
-        // className={`absolute top-[22vh] left-3/4 transform -translate-x-1/2 w-20 h-20 rounded-full flex items-center justify-center border-4 ${
-        //     isNumber(inputValueCarbs) && inputValueCarbs > 0 ? "border-blue-500" : "border-black"
-        // }`}
         className={`absolute top-[22vh] left-3/4 transform -translate-x-1/2 w-[7vw] h-[7vw] rounded-full flex items-center justify-center border-3 ${
-            isNumber(inputValueCarbs) && inputValueCarbs > 0 ? "border-blue-500" : "border-black"
+          isNumber(inputValueCarbs) && inputValueCarbs > 0
+            ? "border-blue-500"
+            : "border-black"
         }`}
       >
         <input
@@ -476,13 +597,11 @@ export default function EnterInformation() {
         <h1>Fats(g)</h1>
       </div>
       <div
-        // className={`absolute top-[40vh] left-20/32 transform -translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center border-3 ${
-        //     isNumber(inputValueFat) && inputValueFat > 0 ? "border-blue-500" : "border-black"
-        // }`}
         className={`absolute top-[40vh] left-20/32 transform -translate-x-1/2 w-[5vw] h-[5vw] rounded-full flex items-center justify-center border-2 ${
-            isNumber(inputValueFat) && inputValueFat > 0 ? "border-blue-500" : "border-black"
+          isNumber(inputValueFat) && inputValueFat > 0
+            ? "border-blue-500"
+            : "border-black"
         }`}
-        
       >
         <input
           type="number"
@@ -592,7 +711,7 @@ export default function EnterInformation() {
 
       <div className="fixed absolute top-[92vh] left-1/2 transform -translate-x-1/2">
         <Button
-          disabled={!isFormValid} 
+          disabled={!isFormValid}
           onClick={handleSubmit}
           className="w-20 h-10 flex items-center justify-center rounded-full text-white font-semibold"
         >

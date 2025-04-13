@@ -1,8 +1,7 @@
 import csv
 
-ret_dict = {}
-
 def filter_ingredients(dining_hall, avoids, special_diets, meals):
+    ret_dict = {}
 
     for m in meals:
         if m == "Breakfast":
@@ -11,8 +10,8 @@ def filter_ingredients(dining_hall, avoids, special_diets, meals):
             ret_dict["Lunch"] = []
         elif m == "Dinner":
             ret_dict["Dinner"] = []
-    print("ret_dict:", ret_dict)
-    print()
+    # print("ret_dict:", ret_dict)
+    # print()
 
     with open(dining_hall+'_menu_data.csv', 'r') as file:
         csv_reader = csv.reader(file)
@@ -39,16 +38,16 @@ def filter_ingredients(dining_hall, avoids, special_diets, meals):
                     continue
 
                 # print("Row:", row)
-                ret_dict[row[7]].append([row[0]] + [row[2]] + [float(row[3])] + [float(row[4])] + [float(row[5])] + [float(row[6])]) 
+                ret_dict[row[7]].append([row[0]] + [row[2]] + [row[3]] + [row[4]] + [row[5]] + [row[6]]) 
 
             
                 
                 #     if len(set(special_diets).intersection(set(row[1].split(',')))) == len(special_diets):
                 #         ret_dict[row[7]].append(row)
+    return ret_dict
                 
 
-filter_ingredients("y", ["egg","gluten"], ["vegetarian"], ["Breakfast","Dinner"])
-
-print(ret_dict)
+# filter_ingredients("y", ["egg","gluten"], ["vegetarian"], ["Breakfast","Dinner"])
+# print(ret_dict)
 
 # print(ret_dict)

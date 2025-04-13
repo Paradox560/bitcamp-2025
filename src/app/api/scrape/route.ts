@@ -14,9 +14,9 @@ export async function POST(req: NextRequest) {
 
         // Receive response
         const data = await response.json();
-        return NextResponse.json(data, { status: response.status });
+        return NextResponse.json({ data: data, status: response.status });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-        return NextResponse.json({ error: 'Failed to connect to Python backend' }, { status: 500 });
+        return NextResponse.json({ error: error }, { status: 500 });
     }
 }
