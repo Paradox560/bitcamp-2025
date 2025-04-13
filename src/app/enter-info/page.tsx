@@ -7,14 +7,16 @@ import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { Toaster, toast } from "sonner";
 import Loading from "@/app/components/loading";
+import { Montserrat, Jost, Nunito} from 'next/font/google'
+
 
 const allergens = [
   { letter: "D", color: "bg-blue-500", tooltip: "Dairy" },
   { letter: "E", color: "bg-yellow-500", tooltip: "Egg" },
   { letter: "S", color: "bg-lime-500", tooltip: "Soy" },
-  { letter: "G", color: "bg-amber-500", tooltip: "Gluten" },
+  { letter: "G", color: "bg-orange-500", tooltip: "Gluten" },
   { letter: "N", color: "bg-red-500", tooltip: "Nuts" },
-  { letter: "SS", color: "bg-orange-500", tooltip: "Sesame" },
+  { letter: "SS", color: "bg-amber-500", tooltip: "Sesame" },
   { letter: "F", color: "bg-pink-500", tooltip: "Fish" },
   { letter: "SF", color: "bg-teal-500", tooltip: "Shellfish" },
 ];
@@ -22,8 +24,27 @@ const allergens = [
 const diets = [
   { letter: "V", color: "bg-emerald-800", tooltip: "Vegetarian" },
   { letter: "VG", color: "bg-purple-500", tooltip: "Vegan" },
-  { letter: "HF", color: "bg-cyan-500", tooltip: "HalalFriendly" },
+  { letter: "HF", color: "bg-cyan-500", tooltip: "Halal Friendly" },
 ];
+
+// Proper font imports
+const montserrat = Montserrat({
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+const jost = Jost({
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+})
+
+const nunito = Nunito({
+  weight: '500',
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 interface Food {
   name: string;
@@ -111,6 +132,7 @@ export default function EnterInformation() {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const maxValue = 9999; // Define the max value for the input
+  const minValue = 0;
 
   const [inputValueCalories, setinputValueCalories] = useState<number | string>(0); // Allow number or string (for empty input)
   const [inputValueProtein, setinputValueProtein] = useState<number | string>(0); // Allow number or string (for empty input)
@@ -152,10 +174,11 @@ export default function EnterInformation() {
     const value = e.target.value;
     if (value === "") {
       setinputValueCalories("");
+      setcaloriesSelected("");
     } else {
       const parsedValue = parseInt(value, 10);
       if (!isNaN(parsedValue)) {
-        if (parsedValue <= maxValue) {
+        if (parsedValue <= maxValue && parsedValue >= minValue) {
           setinputValueCalories(parsedValue);
         }
       }
@@ -359,11 +382,11 @@ export default function EnterInformation() {
       <Toaster position="top-center" />
 
       {/* Rest of your UI remains the same */}
-      <div className="absolute top-[11vh] left-1/2 transform -translate-x-1/2 items-center justify-center text-center font-bold">
+      <div className={`${montserrat.className} absolute top-[11vh] left-1/2 transform -translate-x-1/2 items-center justify-center text-center font-bold`}>
         <h1>Please enter the following information</h1>
       </div>
       <br></br>
-      <div className="absolute top-[15vh] left-1/2 transform -translate-x-1/2 items-center justify-center text-center">
+      <div className={` ${jost.className} absolute top-[15vh] left-1/2 transform -translate-x-1/2 items-center justify-center text-center`}>
         <h1>Calories<span className="text-red-500">*</span></h1>
       </div>
 
@@ -373,7 +396,8 @@ export default function EnterInformation() {
 
       <div
         className={`absolute top-[20vh] left-1/2 transform -translate-x-1/2 w-[19vw] h-[19vw] rounded-full flex items-center justify-center border-8 z-10 ${
-           isNumber(inputValueCalories) && inputValueCalories > 0  ? "border-blue-500" : "border-black"
+           isNumber(inputValueCalories) && inputValueCalories > 0  
+           ? "border-[#9CD3A0] bg-[#E8F5E9]" : "border-gray bg-white"
         }`}
         // className={`absolute top-[20vh] left-1/2 transform -translate-x-1/2 w-48 h-48 rounded-full flex items-center justify-center border-8 z-10 ${
         //     isNumber(inputValueCalories) && inputValueCalories > 0  ? "border-blue-500" : "border-black"
@@ -401,15 +425,16 @@ export default function EnterInformation() {
                 }
             `}</style>
 
-      <div className="absolute top-[32vh] left-1/4 transform -translate-x-1/2 items-center justify-center text-center">
-        <h1>Protein(g)</h1>
+      <div className={`${jost.className} absolute top-[21vh] left-1/4 transform -translate-x-1/2 items-center justify-center text-center`}>
+        <h1>Protein (g)</h1>
       </div>
       <div
         // className={`absolute top-[36vh] left-1/4 transform -translate-x-1/2 w-30 h-30 rounded-full flex items-center justify-center border-6 z-10 ${
         //     isNumber(inputValueProtein) && inputValueProtein > 0  ? "border-blue-500" : "border-black"
         // }`}
-        className={`absolute top-[36vh] left-1/4 transform -translate-x-1/2 w-[9vw] h-[9vw] rounded-full flex items-center justify-center border-5 z-10 ${
-            isNumber(inputValueProtein) && inputValueProtein > 0  ? "border-blue-500" : "border-black"
+        className={`absolute top-[25vh] left-1/4 transform -translate-x-1/2 w-[9vw] h-[9vw] rounded-full flex items-center justify-center border-5 z-10 ${
+            isNumber(inputValueProtein) && inputValueProtein > 0  
+            ? "border-[#9CD3A0] bg-[#E8F5E9]" : "border-gray bg-white"
         }`}
       >
         <input
@@ -432,15 +457,13 @@ export default function EnterInformation() {
                 }
             `}</style>
 
-      <div className="absolute top-[22vh] left-13/16 transform -translate-x-1/2 items-center justify-center text-center">
-        <h1>Carbs(g)</h1>
+      <div className={` ${jost.className}  absolute top-[22vh] left-13/16 transform -translate-x-1/2 items-center justify-center text-center`}>
+        <h1>Carbs (g)</h1>
       </div>
       <div
-        // className={`absolute top-[22vh] left-3/4 transform -translate-x-1/2 w-20 h-20 rounded-full flex items-center justify-center border-4 ${
-        //     isNumber(inputValueCarbs) && inputValueCarbs > 0 ? "border-blue-500" : "border-black"
-        // }`}
         className={`absolute top-[22vh] left-3/4 transform -translate-x-1/2 w-[7vw] h-[7vw] rounded-full flex items-center justify-center border-3 ${
-            isNumber(inputValueCarbs) && inputValueCarbs > 0 ? "border-blue-500" : "border-black"
+            isNumber(inputValueCarbs) && inputValueCarbs > 0
+            ? "border-[#9CD3A0] bg-[#E8F5E9]" : "border-gray bg-white"
         }`}
       >
         <input
@@ -463,15 +486,16 @@ export default function EnterInformation() {
                 }
             `}</style>
 
-      <div className="absolute top-[40vh] left-43/64 transform -translate-x-1/2 items-center justify-center text-center">
-        <h1>Fats(g)</h1>
+      <div className={` ${jost.className} absolute top-[40vh] left-43/64 transform -translate-x-1/2 items-center justify-center text-center`}>
+        <h1>Fats (g)</h1>
       </div>
       <div
         // className={`absolute top-[40vh] left-20/32 transform -translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center border-3 ${
         //     isNumber(inputValueFat) && inputValueFat > 0 ? "border-blue-500" : "border-black"
         // }`}
         className={`absolute top-[40vh] left-20/32 transform -translate-x-1/2 w-[5vw] h-[5vw] rounded-full flex items-center justify-center border-2 ${
-            isNumber(inputValueFat) && inputValueFat > 0 ? "border-blue-500" : "border-black"
+            isNumber(inputValueFat) && inputValueFat > 0 ?
+            "border-[#9CD3A0] bg-[#E8F5E9]" : "border-gray bg-white"
         }`}
         
       >
@@ -495,14 +519,14 @@ export default function EnterInformation() {
                 }
             `}</style>
 
-      <div className="absolute top-[70vh] left-[10vw] transform -translate-x-1/2 items-center justify-center text-center font-bold">
+      <div className="absolute top-[60vh] left-[11vw] transform -translate-x-1/2 items-center justify-center text-center font-bold">
         <h1>Step 2: Restrictions</h1>
       </div>
 
-      <div className="absolute top-[75vh] left-2/8 transform -translate-x-1/2 items-center justify-center text-center">
+      <div className={`${jost.className}  absolute top-[70vh] left-2/8 transform -translate-x-1/2 items-center justify-center text-center`}>
         <h1>Avoid</h1>
       </div>
-      <div className="absolute top-[80vh] left-1/4 transform -translate-x-1/2 flex flex-wrap gap-1 justify-center items-center">
+      <div className="absolute top-[75vh] left-1/4 transform -translate-x-1/2 flex flex-wrap gap-1 justify-center items-center">
         {allergens.map((btn, index) => (
           <div key={index} className="relative">
             {hoveredIndexOne === index && (
@@ -514,7 +538,7 @@ export default function EnterInformation() {
               onClick={() => toggleClickOne(index)}
               onMouseEnter={() => setHoveredIndexOne(index)}
               onMouseLeave={() => setHoveredIndexOne(null)}
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xl transition-colors duration-300 ${
+              className={`w-8 h-8 cursor-pointer  rounded-full flex items-center justify-center text-white font-bold text-xl transition-colors duration-300 ${
                 clickedOne[index] ? btn.color : "bg-black"
               }`}
             >
@@ -524,10 +548,10 @@ export default function EnterInformation() {
         ))}
       </div>
 
-      <div className="absolute top-[75vh] left-4/8 transform -translate-x-1/2 items-center justify-center text-center">
+      <div className={`${jost.className} absolute top-[85vh] left-2/8 transform -translate-x-1/2 items-center justify-center text-center`}>
         <h1>Special Diet</h1>
       </div>
-      <div className="absolute top-[80vh] left-1/2 transform -translate-x-1/2 flex flex-wrap gap-1 justify-center items-center">
+      <div className="absolute top-[90vh] left-1/4 transform -translate-x-1/2 flex flex-wrap gap-1 justify-center items-center">
         {diets.map((btn, index) => (
           <div key={index} className="relative">
             {hoveredIndexTwo === index && (
@@ -539,7 +563,7 @@ export default function EnterInformation() {
               onClick={() => toggleClickTwo(index)}
               onMouseEnter={() => setHoveredIndexTwo(index)}
               onMouseLeave={() => setHoveredIndexTwo(null)}
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xl transition-colors duration-300 ${
+              className={`w-8 h-8 rounded-full cursor-pointer flex items-center justify-center text-white font-bold text-xl transition-colors duration-300 ${
                 clickedTwo[index] ? btn.color : "bg-black"
               }`}
             >
@@ -549,15 +573,15 @@ export default function EnterInformation() {
         ))}
       </div>
 
-      <div className="absolute top-[50vh] left-14/16 transform -translate-x-1/2 items-center justify-center text-center font-bold">
-              <h1>Step 3</h1>
+      <div className="absolute top-[50vh] left-88/100 transform -translate-x-1/2 items-center justify-center text-center font-bold w-[20vw] overflow-x-hidden">
+              <h1>Step 3: Location and Times</h1>
       </div>
 
-      <div className="absolute top-[55vh] left-13/16 transform -translate-x-1/2 items-center justify-center text-center font-bold">
+      <div className={`${jost.className} absolute top-[55vh] left-13/16 transform -translate-x-1/2 items-center justify-center text-center`}>
               <h1>Dining Hall<span className="text-red-500">*</span></h1>
       </div>
 
-      <div className="absolute top-[55vh] left-15/16 transform -translate-x-1/2 items-center justify-center text-center font-bold">
+      <div className={`${jost.className} absolute top-[55vh] left-15/16 transform -translate-x-1/2 items-center justify-center text-center`}>
               <h1>Meals<span className="text-red-500">*</span></h1>
       </div>
 
@@ -566,10 +590,10 @@ export default function EnterInformation() {
         <button
           key={index}
           onClick={() => handleClickMeal(index)}
-          className={`w-30 h-10 flex items-center justify-center rounded text-white font-semibold px-1 py-2 
-            ${clickedMeal === index ? "bg-blue-500" : "bg-gray-950"} 
+          className={` ${nunito.className} cursor-pointer w-30 h-10 flex items-center justify-center rounded text-white font-semibold px-1 py-2 
+            ${clickedMeal === index ? "bg-[#568F3D]" : "bg-gray-500"} 
             focus:outline-none 
-            ${clickedMeal === index ? "hover:bg-blue-500" : ""} // No hover effect after clicked
+            ${clickedMeal === index ? "bg-[#568F3D]" : ""} // No hover effect after clicked
           `}
         >
           {label}
@@ -582,8 +606,8 @@ export default function EnterInformation() {
         <button
           key={index}
           onClick={() => handleClickHall(index)}
-          className={`w-30 h-10 flex items-center justify-center rounded text-white font-semibold 
-            ${clickedHall[index] ? "bg-blue-500" : "bg-gray-950"} 
+          className={` ${nunito.className} w-30 h-10 cursor-pointer flex items-center justify-center rounded text-white font-semibold 
+            ${clickedHall[index] ? "bg-[#568F3D]" : "bg-gray-500"} 
             focus:outline-none`}
         >
           {label}
@@ -597,7 +621,7 @@ export default function EnterInformation() {
         <Button
           disabled={!isFormValid} 
           onClick={handleSubmit}
-          className="w-20 h-10 flex items-center justify-center rounded-full text-white font-semibold"
+          className="w-20 h-10 flex items-center justify-center rounded-full text-white font-semibold  bg-[#E13318] hover:bg-red-800 cursor-pointer"
           >
           Submit
         </Button>
