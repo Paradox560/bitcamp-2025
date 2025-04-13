@@ -208,15 +208,15 @@ export default function EnterInformation() {
 
   const handleClickMeal = (index: number) => {
     setClickedMeal(clickedMeal === index ? null : index);
-    setMealSelected("valid");
-  };
+    setHallSelected("valid");
+};
 
   const handleClickHall = (index: number) => {
     const updatedClickedHall = [...clickedHall];
     updatedClickedHall[index] = !updatedClickedHall[index];
     setClickedHall(updatedClickedHall);
-    setHallSelected("valid");
-  };
+    setMealSelected("valid");
+};
 
   const isNumber = (value: number | string): value is number => {
     return typeof value === "number";
@@ -359,7 +359,7 @@ export default function EnterInformation() {
       <Toaster position="top-center" />
 
       {/* Rest of your UI remains the same */}
-      <div className="absolute top-[8vh] left-1/2 transform -translate-x-1/2 items-center justify-center text-center">
+      <div className="absolute top-[11vh] left-1/2 transform -translate-x-1/2 items-center justify-center text-center font-bold">
         <h1>Please enter the following information</h1>
       </div>
       <br></br>
@@ -562,39 +562,43 @@ export default function EnterInformation() {
       </div>
 
       <div className="absolute top-[60vh] left-13/16 -translate-x-1/2 flex flex-col space-y-2 items-center z-20">
-        {meals.map((label, index) => (
-          <Button
-            key={index}
-            onClick={() => handleClickMeal(index)}
-            className={`w-30 h-10 flex items-center justify-center rounded text-white font-semibold transition-colors duration-300 px-1 py-3 ${
-              clickedMeal === index ? "bg-blue-500" : "bg-gray-950"
-            }`}
-          >
-            {label}
-          </Button>
-        ))}
-      </div>
+      {meals.map((label, index) => (
+        <button
+          key={index}
+          onClick={() => handleClickMeal(index)}
+          className={`w-30 h-10 flex items-center justify-center rounded text-white font-semibold px-1 py-2 
+            ${clickedMeal === index ? "bg-blue-500" : "bg-gray-950"} 
+            focus:outline-none 
+            ${clickedMeal === index ? "hover:bg-blue-500" : ""} // No hover effect after clicked
+          `}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
 
-      <div className="absolute top-[60vh] left-15/16 -translate-x-1/2 flex flex-col space-y-2 items-center z-20">
-        {dining_halls.map((label, index) => (
-          <Button
-            key={index}
-            onClick={() => handleClickHall(index)}
-            className={`w-30 h-10 flex items-center justify-center rounded text-white font-semibold transition-colors duration-300 ${
-              clickedHall[index] ? "bg-blue-500" : "bg-gray-950"
-            }`}
-          >
-            {label}
-          </Button>
-        ))}
-      </div>
+    <div className="absolute top-[60vh] left-15/16 -translate-x-1/2 flex flex-col space-y-2 items-center z-20">
+      {dining_halls.map((label, index) => (
+        <button
+          key={index}
+          onClick={() => handleClickHall(index)}
+          className={`w-30 h-10 flex items-center justify-center rounded text-white font-semibold 
+            ${clickedHall[index] ? "bg-blue-500" : "bg-gray-950"} 
+            focus:outline-none`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+
+
 
       <div className="fixed absolute top-[92vh] left-1/2 transform -translate-x-1/2">
         <Button
           disabled={!isFormValid} 
           onClick={handleSubmit}
           className="w-20 h-10 flex items-center justify-center rounded-full text-white font-semibold"
-        >
+          >
           Submit
         </Button>
       </div>
