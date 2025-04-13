@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from ingredient_filtering import filter_ingredients
-from gemini_route import generate
+from .ingredient_filtering import filter_ingredients
+from .gemini_route import generate
 import json
 
 app = Flask(__name__)
