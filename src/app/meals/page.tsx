@@ -31,9 +31,90 @@ const nunito = Nunito({
 })
 
 export default function Page() {
+    const [isSpinning1, setIsSpinning1] = useState(false);
+    const [isSpinning2, setIsSpinning2] = useState(false);
+    const [isSpinning3, setIsSpinning3] = useState(false);
+    const [isSpinning4, setIsSpinning4] = useState(false);
+    const [isSpinning5, setIsSpinning5] = useState(false);
+    const [isSpinning6, setIsSpinning6] = useState(false);
+    const [isSpinning7, setIsSpinning7] = useState(false);
+    const [isSpinning8, setIsSpinning8] = useState(false);
+    const [isSpinning9, setIsSpinning9] = useState(false);
+
+    const handleRefreshClick1 = () => {
+        // Start spinning
+        setIsSpinning1(true);
+        // Stop the spin after 1 second
+        setTimeout(() => {
+            setIsSpinning1(false);
+        }, 1000);
+    };
+    const handleRefreshClick2 = () => {
+        // Start spinning
+        setIsSpinning2(true);
+        // Stop the spin after 1 second
+        setTimeout(() => {
+            setIsSpinning2(false);
+        }, 1000);
+    };
+    const handleRefreshClick3 = () => {
+        // Start spinning
+        setIsSpinning3(true);
+        // Stop the spin after 1 second
+        setTimeout(() => {
+            setIsSpinning3(false);
+        }, 1000);
+    };
+    const handleRefreshClick4 = () => {
+        // Start spinning
+        setIsSpinning4(true);
+        // Stop the spin after 1 second
+        setTimeout(() => {
+            setIsSpinning4(false);
+        }, 1000);
+    };
+    const handleRefreshClick5 = () => {
+        // Start spinning
+        setIsSpinning5(true);
+        // Stop the spin after 1 second
+        setTimeout(() => {
+            setIsSpinning5(false);
+        }, 1000);
+    };
+    const handleRefreshClick6 = () => {
+        // Start spinning
+        setIsSpinning6(true);
+        // Stop the spin after 1 second
+        setTimeout(() => {
+            setIsSpinning6(false);
+        }, 1000);
+    };
+    const handleRefreshClick7 = () => {
+        // Start spinning
+        setIsSpinning7(true);
+        // Stop the spin after 1 second
+        setTimeout(() => {
+            setIsSpinning7(false);
+        }, 1000);
+    };
+    const handleRefreshClick8 = () => {
+        // Start spinning
+        setIsSpinning8(true);
+        // Stop the spin after 1 second
+        setTimeout(() => {
+            setIsSpinning8(false);
+        }, 1000);
+    };
+    const handleRefreshClick9 = () => {
+        // Start spinning
+        setIsSpinning9(true);
+        // Stop the spin after 1 second
+        setTimeout(() => {
+            setIsSpinning9(false);
+        }, 1000);
+    };
     return (
         <div className="bg-white">
-            <Navbar/>
             <div>
                 <p className={`${montserrat.className} text-center text-2xl font-bold mb-2 mt-4`}>Your Curated Meals:</p>
             </div>
@@ -45,11 +126,11 @@ export default function Page() {
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <CardTitle className={montserrat.className}>Breakfast Meal 1</CardTitle>
-                                <Button variant="ghost" size="icon">
+                                <Button variant="ghost" size="icon" onClick={handleRefreshClick1}>
                                     <img
                                         src="https://img.icons8.com/?size=100&id=59872&format=png&color=000000"
                                         alt="Refresh"
-                                        className="h-5 w-5"
+                                        className={`${isSpinning1 ? 'animate-spin' : ''} h-5 w-5`}
                                     />
                                 </Button>
                             </div>                            
@@ -64,11 +145,11 @@ export default function Page() {
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <CardTitle className={montserrat.className}>Breakfast Meal 2</CardTitle>
-                                <Button variant="ghost" size="icon">
+                                <Button variant="ghost" size="icon" onClick={handleRefreshClick2}>
                                     <img
                                         src="https://img.icons8.com/?size=100&id=59872&format=png&color=000000"
                                         alt="Refresh"
-                                        className="h-5 w-5"
+                                        className={`${isSpinning2 ? 'animate-spin' : ''} h-5 w-5`}
                                     />
                                 </Button>
                             </div>    
@@ -83,11 +164,11 @@ export default function Page() {
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <CardTitle className={montserrat.className}>Breakfast Meal 3</CardTitle>
-                                <Button variant="ghost" size="icon">
+                                <Button variant="ghost" size="icon" onClick={handleRefreshClick3}>
                                     <img
                                         src="https://img.icons8.com/?size=100&id=59872&format=png&color=000000"
                                         alt="Refresh"
-                                        className="h-5 w-5"
+                                        className={`${isSpinning3 ? 'animate-spin' : ''} h-5 w-5`}
                                     />
                                 </Button>
                             </div>    
@@ -107,11 +188,11 @@ export default function Page() {
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <CardTitle>Lunch Meal 1</CardTitle>
-                                <Button variant="ghost" size="icon">
+                                <Button variant="ghost" size="icon" onClick={handleRefreshClick4}>
                                     <img
                                         src="https://img.icons8.com/?size=100&id=59872&format=png&color=000000"
                                         alt="Refresh"
-                                        className="h-5 w-5"
+                                        className={`${isSpinning4 ? 'animate-spin' : ''} h-5 w-5`}
                                     />
                                 </Button>
                             </div>
@@ -126,11 +207,11 @@ export default function Page() {
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <CardTitle>Lunch Meal 2</CardTitle>
-                                <Button variant="ghost" size="icon">
+                                <Button variant="ghost" size="icon" onClick={handleRefreshClick5}>
                                     <img
                                         src="https://img.icons8.com/?size=100&id=59872&format=png&color=000000"
                                         alt="Refresh"
-                                        className="h-5 w-5"
+                                        className={`${isSpinning5 ? 'animate-spin' : ''} h-5 w-5`}
                                     />
                                 </Button>
                             </div>
@@ -145,11 +226,11 @@ export default function Page() {
                         <CardHeader>
                         <div className="flex items-center justify-between">
                                 <CardTitle>Lunch Meal 3</CardTitle>
-                                <Button variant="ghost" size="icon">
+                                <Button variant="ghost" size="icon" onClick={handleRefreshClick6}>
                                     <img
                                         src="https://img.icons8.com/?size=100&id=59872&format=png&color=000000"
                                         alt="Refresh"
-                                        className="h-5 w-5"
+                                        className={`${isSpinning6 ? 'animate-spin' : ''} h-5 w-5`}
                                     />
                                 </Button>
                             </div>
@@ -169,11 +250,11 @@ export default function Page() {
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <CardTitle>Dinner Meal 1</CardTitle>
-                                <Button variant="ghost" size="icon">
+                                <Button variant="ghost" size="icon" onClick={handleRefreshClick7}>
                                     <img
                                         src="https://img.icons8.com/?size=100&id=59872&format=png&color=000000"
                                         alt="Refresh"
-                                        className="h-5 w-5"
+                                        className={`${isSpinning7 ? 'animate-spin' : ''} h-5 w-5`}
                                     />
                                 </Button>
                             </div>
@@ -187,12 +268,12 @@ export default function Page() {
                     <Card className="h-[400px] w-[400px] bg-white">
                         <CardHeader>
                             <div className="flex items-center justify-between">
-                                <CardTitle>Dinner Meal 1</CardTitle>
-                                <Button variant="ghost" size="icon">
+                                <CardTitle>Dinner Meal 2</CardTitle>
+                                <Button variant="ghost" size="icon" onClick={handleRefreshClick8}>
                                     <img
                                         src="https://img.icons8.com/?size=100&id=59872&format=png&color=000000"
                                         alt="Refresh"
-                                        className="h-5 w-5"
+                                        className={`${isSpinning8 ? 'animate-spin' : ''} h-5 w-5`}
                                     />
                                 </Button>
                             </div>
@@ -206,12 +287,12 @@ export default function Page() {
                     <Card className="h-[400px] w-[400px] bg-white">
                         <CardHeader>
                             <div className="flex items-center justify-between">
-                                <CardTitle>Dinner Meal 1</CardTitle>
-                                <Button variant="ghost" size="icon">
+                                <CardTitle>Dinner Meal 3</CardTitle>
+                                <Button variant="ghost" size="icon" onClick={handleRefreshClick9}>
                                     <img
                                         src="https://img.icons8.com/?size=100&id=59872&format=png&color=000000"
                                         alt="Refresh"
-                                        className="h-5 w-5"
+                                        className={`${isSpinning9 ? 'animate-spin' : ''} h-5 w-5`}
                                     />
                                 </Button>
                             </div>
