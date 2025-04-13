@@ -19,7 +19,11 @@ def scrape():
     if request.method == 'POST':
         # Here you would call your web scraping function
         # For example: result = web_scraping_function()
-        data = request.json.get("data")
+        halls = request.json.get("diningHall")
+        allergens = request.json.get("allergens")
+        diets = request.json.get("diets")
+        meals = request.json.get("meals")
+        result = web_scraping_function(halls, allergens, diets, meals)
         return jsonify(result), 200
     else:
         return None

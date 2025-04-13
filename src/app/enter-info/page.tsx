@@ -132,6 +132,8 @@ export default function EnterInformation() {
   const [hallSelected, setHallSelected] = useState<string>("");
   const [mealSelected, setMealSelected] = useState<string>("");
 
+  const [foodList, setFoodList] = useState<FoodList[]>();
+
   const isFormValid = caloriesSelected !== "" && hallSelected !== "" && mealSelected !== "";
 
   const toggleClickOne = (index: number) => {
@@ -277,7 +279,14 @@ export default function EnterInformation() {
 
       console.log("User data updated successfully");
 
+      const response = await fetch("/api/scrape", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ allergens: selectedAllergens, diningHall: selectedMeal, diets: selectedDiets, meals: selectedDiningHall }),
+      });
 
+      const data = await response.json();
+      setFoodList(data);
     } catch (error) {
       console.error("Error updating user data:", error);
       // Use Sonner toast instead of alert
