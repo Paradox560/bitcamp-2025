@@ -160,7 +160,7 @@ export default function EnterInformation() {
   const [mealSelected, setMealSelected] = useState<string>("");
 
   // const [foodList, setFoodList] = useState<FoodList[]>();
-  const [mealList, setMealList] = useState<Meal[]>([]);
+  const [, setMealList] = useState<Meal[]>([]);
 
   const isFormValid =
     caloriesSelected !== "" && hallSelected !== "" && mealSelected !== "";
@@ -376,6 +376,7 @@ export default function EnterInformation() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            mealNumber: selectedMeal.length,
             requestNumber: 3,
             allergens: selectedAllergens,
             diningHall: selectedDiningHall,

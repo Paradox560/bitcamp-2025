@@ -64,7 +64,7 @@ interface UserDetails {
 
 export default function Page() {
   const { user } = useUser();
-    const [loading, setLoading] = useState(false);
+    const [, setLoading] = useState(false);
     const [refreshToggle, setRefreshToggle] = useState(false);
 
   const [isSpinning1, setIsSpinning1] = useState(false);
@@ -167,11 +167,23 @@ export default function Page() {
 
     setLoading(true);
 
-    try {
+      try {
+          let numberOfMeals = 0;
+          if (breakfast) {
+              numberOfMeals++;
+          }
+          if (lunch) {
+              numberOfMeals++;
+          }
+          if (dinner) {
+              numberOfMeals++;
+          }
+          
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+          body: JSON.stringify({
+          mealNumber: numberOfMeals,
           requestNumber: 1,
           allergens: userDetails?.allergens,
           diningHall: userDetails?.diningHall,
@@ -191,7 +203,7 @@ export default function Page() {
       const responseData = await response.json();
       // console.log("API Response:", responseData.data);
       const mealRef = collection(doc(db, "users", user.id), meal);
-        await setDoc(doc(mealRef, mealNumber), responseData.data[0]);
+      await setDoc(doc(mealRef, mealNumber), responseData.data[0]);
         
         setRefreshToggle(!refreshToggle);
 
@@ -366,13 +378,6 @@ export default function Page() {
                       <li>
                         <strong>Total Carbs:</strong> {meal.total_carbs}g
                       </li>
-                      <li>
-                            <strong>Allergens:</strong> {userDetails?.allergens.join(', ')}
-                      </li>
-                                                          
-                      <li>
-                        <strong>Diet:</strong> { userDetails?.specialDiets.join(', ') }
-                      </li>
                     </ul>
                   </div>
                   <div className="border-t border-gray-300 mt-2 pt-2">
@@ -465,13 +470,6 @@ export default function Page() {
                       <li>
                         <strong>Total Carbs:</strong> {meal.total_carbs}g
                       </li>
-                      <li>
-                            <strong>Allergens:</strong> {userDetails?.allergens.join(', ')}
-                      </li>
-                                                          
-                      <li>
-                        <strong>Diet:</strong> { userDetails?.specialDiets.join(', ') }
-                      </li>
                     </ul>
                   </div>
                   <div className="border-t border-gray-300 mt-2 pt-2">
@@ -562,13 +560,6 @@ export default function Page() {
                       </li>
                       <li>
                         <strong>Total Carbs:</strong> {meal.total_carbs}g
-                      </li>
-                      <li>
-                            <strong>Allergens:</strong> {userDetails?.allergens.join(', ') || "None"}
-                      </li>
-                                                          
-                      <li>
-                        <strong>Diet:</strong> { userDetails?.specialDiets.join(', ') || "None"}
                       </li>
                     </ul>
                   </div>
