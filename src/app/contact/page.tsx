@@ -13,7 +13,7 @@ const teamMembers = [
   },
   {
     name: "Jayant Kammula",
-    title: "Full Stack Developer",
+    title: "Frontend Developer",
     description: "University of Maryland, College Park",
     linkName: "LinkedIn",
     professionalLink: "https://www.linkedin.com/in/jayantkammula",
@@ -21,7 +21,7 @@ const teamMembers = [
   },
   {
     name: "Pranav Palle",
-    title: "Full Stack Developer and Project Manager",
+    title: "Full Stack Developer and Technical Project Lead",
     description: "University of Maryland, College Park",
     linkName: "Personal Website",
     professionalLink: "https://pranavpalle.netlify.app",
