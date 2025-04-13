@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { Toaster, toast } from "sonner";
 import Loading from "@/app/components/loading";
@@ -371,37 +371,46 @@ export default function EnterInformation() {
 
       console.log("User data updated successfully");
 
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          allergens: selectedAllergens,
-          diningHall: selectedDiningHall,
-          diets: selectedDiets,
-          meals: selectedMeal,
-          calories: inputValueCalories,
-          protein: inputValueProtein,
-          fat: inputValueFat,
-          carbs: inputValueCarbs,
-        }),
-      });
+      for (let i = 0; i < selectedMeal.length; i++) {
+        const response = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            requestNumber: 3,
+            allergens: selectedAllergens,
+            diningHall: selectedDiningHall,
+            diets: selectedDiets,
+            meals: [selectedMeal[i]],
+            calories: inputValueCalories,
+            protein: inputValueProtein,
+            fat: inputValueFat,
+            carbs: inputValueCarbs,
+          }),
+        });
+      
 
-      if (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
-      }
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
 
-      const responseData = await response.json();
-      // console.log("API Response:", responseData.data);
+        const responseData = await response.json();
+        // console.log("API Response:", responseData.data);
 
-      setMealList(responseData.data);
+        setMealList(responseData.data);
 
-      // console.log("Meal list:", mealList);
-      toast.success("Meal generated successfully!");
+        const mealRef = collection(userDocRef, selectedMeal[i]);
+        for (let j = 0; j < responseData.data.length; j++) {
+          await setDoc(doc(mealRef, 'Meal ' + (j + 1)), responseData.data[j]);
+        }
 
-      if (!responseData.data) {
-        toast.error("No food data available");
-        setLoading(false);
-        return;
+        // console.log("Meal list:", mealList);
+        toast.success("Meal generated successfully!");
+
+        if (!responseData.data) {
+          toast.error("No food data available");
+          setLoading(false);
+          return;
+        }
       }
 
       // Transform the data to match our FoodList interface
@@ -491,9 +500,16 @@ export default function EnterInformation() {
           }
 
           if (userData.meals) {
-            const updatedClickedMeal = dining_halls.map(
-              (_, index) => userData.meals === dining_halls[index]
-            );
+            const updatedClickedMeal = [false, false, false];
+            if (userData.meals.includes("Breakfast")) { 
+              updatedClickedMeal[0] = true;
+            }
+            if (userData.meals.includes("Lunch")) {
+              updatedClickedMeal[1] = true;
+            }
+            if (userData.meals.includes("Dinner")) {
+              updatedClickedMeal[2] = true;
+            }
             setMealSelected("valid");
             setClickedHall(updatedClickedMeal);
           }

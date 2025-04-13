@@ -66,11 +66,10 @@ def gemini():
     #     }
     if request.method == 'POST':
         dining_hall = request.json.get("diningHall")
-        for i in range(len(dining_hall)):
-            if (dining_hall[i] == "Yahentamitsi"):
-                dining_hall[i] = "y"
-            elif (dining_hall[i] == "South"):
-                dining_hall[i] = "south"
+        if (dining_hall == "Yahentamitsi"):
+            dining_hall = "y"
+        elif (dining_hall == "South"):
+            dining_hall = "south"
 
         allergens = request.json.get("allergens")
         for i in range(len(allergens)):
@@ -84,6 +83,7 @@ def gemini():
                 diets[i] = "vegan"
 
         meals = request.json.get("meals")
+        req_number = int(request.json.get("requestNumber"))
 
         # print(dining_hall, allergens, diets, meals)
         result = filter_ingredients(dining_hall, allergens, diets, meals)
@@ -94,19 +94,20 @@ def gemini():
         user_fat = request.json.get("fat")
         user_carbs = request.json.get("carbs")
 
-        for m in result:
-            ingredients = result[m]
+        for _ in range(req_number):
+            for m in result:
+                ingredients = result[m]
 
-            temp_user_prompt = f"Here's my food list for specifically the {m} meal, do not create plans for any other meals besides the one specified: {ingredients} \n Please create a list of foods and quantities as specified by the JSON format with these nutritional targets: \n - Calories: {float(user_calories) / len(result)} "
+                temp_user_prompt = f"Here's my food list for specifically the {m} meal, do not create plans for any other meals besides the one specified: {ingredients} \n Please create a list of foods and quantities as specified by the JSON format with these nutritional targets: \n - Calories: {float(user_calories) / len(result)} "
 
-            if (user_protein):
-                temp_user_prompt += f"\n - Protein: {float(user_protein) / len(result)} "
-            if (user_carbs):
-                temp_user_prompt += f"\n - Carbs: {float(user_carbs) / len(result)} "
-            if (user_fat):
-                temp_user_prompt += f"\n - Fat: {float(user_fat) / len(result)} "
-            
-            user_prompts.append(temp_user_prompt)
+                if (user_protein):
+                    temp_user_prompt += f"\n - Protein: {float(user_protein) / len(result)} "
+                if (user_carbs):
+                    temp_user_prompt += f"\n - Carbs: {float(user_carbs) / len(result)} "
+                if (user_fat):
+                    temp_user_prompt += f"\n - Fat: {float(user_fat) / len(result)} "
+                
+                user_prompts.append(temp_user_prompt)
 
         gemini_response = [generate(user_prompt) for user_prompt in user_prompts]
         return jsonify(gemini_response), 200
