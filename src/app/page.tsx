@@ -250,7 +250,7 @@ export default function Home() {
           </div>
           <div className="border-l-4 border-[#365A27] pl-4 py-1">
             <p className="italic text-black mb-2">
-              &quot;As an athlete, I need to carefully track my nutrition. TerpMeals helps me find the right balance of protein and carbs at every dining hall.&quot;
+              &quot;As an athlete, I need to carefully track my nutrition. MacroTerpitech helps me find the right balance of protein and carbs at every dining hall.&quot;
             </p>
             <p className="text-right font-medium text-sm text-gray-700">
               - Michael, Sophomore, Kinesiology
