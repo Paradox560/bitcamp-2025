@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,11 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { collection, doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
-import { Toaster, toast } from "sonner";
+import { collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { toast } from "sonner";
 import { db } from "../../../firebase";
 import { useUser } from "@clerk/nextjs";
-import Loading from "@/app/components/loading";
 import { Montserrat, Jost, Nunito } from "next/font/google";
 
 const montserrat = Montserrat({
