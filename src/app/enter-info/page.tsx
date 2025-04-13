@@ -7,6 +7,7 @@ import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { Toaster, toast } from "sonner";
 import Loading from "@/app/components/loading";
+import { useRouter } from "next/navigation";
 
 const allergens = [
   { letter: "D", color: "bg-blue-500", tooltip: "Dairy" },
@@ -24,19 +25,56 @@ const diets = [
   { letter: "VG", color: "bg-purple-500", tooltip: "Vegan" },
   { letter: "HF", color: "bg-cyan-500", tooltip: "HalalFriendly" },
 ];
+// "{
+//   "description": "This dinner features a delicious and protein-rich Moroccan Chicken paired with a side of roasted vegetables.",
+//   "foods": [
+//     {
+//       "calories": 140.0,
+//       "carbs": 2.0,
+//       "fat": 5.8,
+//       "food_name": "Moroccan Chicken",
+//       "protein": 20.0,
+//       "serving_size": "4 oz"
+//     },
+//     {
+//       "calories": 86.0,
+//       "carbs": 6.9,
+//       "fat": 6.6,
+//       "food_name": "Curry Roasted Vegetables",
+//       "protein": 1.5,
+//       "serving_size": "3 oz"
+//     },
+//     {
+//       "calories": 7.0,
+//       "carbs": 1.0,
+//       "fat": 0.2,
+//       "food_name": "Arugula",
+//       "protein": 0.7,
+//       "serving_size": "1 oz"
+//     },
+//     {
+//       "calories": 5.0,
+//       "carbs": 1.1,
+//       "fat": 0.1,
+//       "food_name": "Grape Tomatoes",
+//       "protein": 0.2,
+//       "serving_size": "1 oz"
+//     }
+//   ],
+//   "name": "Moroccan Chicken with Curry Roasted Vegetables",
+//   "total_calories": 238.0,
+//   "total_carbs": 11.0,
+//   "total_fat": 12.7,
+//   "total_protein": 22.4
+// }"
 
 interface Food {
-  name: string;
+  food_name: string;
   servingSize: string;
   calories: string;
   fats: string;
   carbs: string;
   protein: string;
-}
-
-interface FoodList {
-  meal: string;
-  ingredients: Food[];
 }
 
 interface Meal {
@@ -57,60 +95,34 @@ carbs, and protein per serving. You should create a name for this meal, a one se
 in the meal, and the serving size, total calories, fat, carbs, and protein. We will also give you the number of calories, fat, carbs,
 and protein the user wants to eat for this meal. Please make your meal’s total calories, fat, carbs, and protein come as close to
 possible as what the user wants to eat with it serving as a lower bound. Please limit yourself to only using a maximum of 7 ingredients.
-For each food, specify how many calories, fat, carbs, and protein the total serving. You should return in the following JSON format:
+For each food, specify how many calories, fat, carbs, and protein the total serving.
+When responding to future queries, you MUST return in the following JSON format, no other comments necessary:
 {
-  info: [{
-    “name”: str,
-    “description”: str
+  info: {
+    “name”: string,
+    “description”: string
     “total_calories”: number
     “total_fat”: number
     “total_carbs”: number
     “total_fat”: number,
     foods: [
-      {"food_name": str,
-      “serving_size”: str
-      “calories”: number
-      “fat”: number
-      “carbs”: number
-      “protein”: number},
-      {food_name: str,
-      “serving_size”: str
-      “calories”: number
-      “fat”: number
-      “carbs”: number
-      “protein”: number},
-      {"food_name": str,
-      “serving_size”: str
-      “calories”: number
-      “fat”: number
-      “carbs”: number
-      “protein”: number},
-      {"food_name": str,
-      “serving_size”: str
-      “calories”: number
-      “fat”: number
-      “carbs”: number
-      “protein”: number},
-      {"food_name": str,
-      “serving_size”: str
-      “calories”: number
-      “fat”: number
-      “carbs”: number
-      “protein”: number},
-      {"food_name": str,
-      “serving_size”: str
-      “calories”: number
-      “fat”: number
-      “carbs”: number
-      “protein”: number},
-      {"food_name": str,
-      “serving_size”: str
-      “calories”: number
-      “fat”: number
-      “carbs”: number
-      “protein”: number}
+      {
+        "food_name": string,
+        “serving_size”: string,
+        “calories”: number,
+        “fat”: number,
+        “carbs”: number,
+        “protein”: number,
+      },
+      {
+        "food_name": string,
+        “serving_size”: string,
+        “calories”: number,
+        “fat”: number,
+        “carbs”: number,
+        “protein”: number,
+      },
     ]
-  ]
 }`;
 
 /* Switched them around to save time instead of actually switching them */
@@ -118,6 +130,7 @@ const dining_halls = ["Breakfast", "Lunch", "Dinner"];
 const meals = ["Yahentamitsi", "251", "South"];
 
 export default function EnterInformation() {
+  const router = useRouter();  
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const maxValue = 9999; // Define the max value for the input
@@ -241,73 +254,69 @@ export default function EnterInformation() {
   };
 
   // Add this function in your page.tsx file, before your return statement
-  const generateMeal = async () => {
-    if (!foodList || foodList.length === 0) {
-      toast.error("No food data available. Please try again.");
-      return;
-    }
+  // const generateMeal = async () => {
+  //   if (!foodList || foodList.length === 0) {
+  //     toast.error("No food data available. Please try again.");
+  //     return;
+  //   }
 
-    setLoading(true);
-    try {
-      const userPrompts = [];
-      const len = foodList.length;
-      console.log("fl" + foodList);
-      for (let i = 0; i < len; i++) {
-        const f = foodList[i].ingredients;
-        // Prepare user prompt with foodList and desired macros
-        // If one of the inputs is empty, do not include in user prompt
-        let userPrompt = `
-        Here's my food list: ${JSON.stringify(f)}
-      
-        Please create a meal with these nutritional targets:
-        - Calories: ${Number(inputValueCalories) / len}`;
+  //   setLoading(true);
+  //   try {
+  //     const userPrompts = [];
+  //     const len = foodList.length;
+  //     // console.log("fl" + foodList);
+  //     for (let i = 0; i < len; i++) {
+  //       const f = foodList[i].ingredients;
+  //       // Prepare user prompt with foodList and desired macros
+  //       let userPrompt = `
+  //       Here's my food list for specifically the ${
+  //         foodList[i].meal
+  //       } meal, do not create plans for any other meals besides the one specified: ${JSON.stringify(
+  //         f
+  //       )}
 
-        if (inputValueProtein) {
-          userPrompt += `\n- Protein: ${Number(inputValueProtein) / len}`;
-          console.log("hi");
-          console.log(inputValueProtein);
-        }
+  //       Please create a list of foods and quantities as specified by the JSON format with these nutritional targets:
+  //       - Calories: ${Number(inputValueCalories) / len}`;
 
-        if (inputValueCarbs) {
-          userPrompt += `\n- Carbs: ${Number(inputValueCarbs) / len}`;
-        }
+  //       if (inputValueProtein) {
+  //         userPrompt += `\n- Protein: ${Number(inputValueProtein) / len}`;
+  //       }
 
-        if (inputValueFat) {
-          userPrompt += `\n- Fat: ${Number(inputValueFat) / len}`;
-        }
+  //       if (inputValueCarbs) {
+  //         userPrompt += `\n- Carbs: ${Number(inputValueCarbs) / len}`;
+  //       }
 
-        console.log(userPrompts.push(userPrompt));
-      }
+  //       if (inputValueFat) {
+  //         userPrompt += `\n- Fat: ${Number(inputValueFat) / len}`;
+  //       }
 
-      console.log("User Prompt" + userPrompts);
+  //       userPrompts.push(userPrompt);
+  //     }
 
-      // Call the API endpoint
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          systemPrompt: systemPrompt,
-          userPrompts: userPrompts,
-        }),
-      });
+  //     console.log("User Prompt" + userPrompts);
 
-      if (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
-      }
+  //     // Call the API endpoint
+  //     const response = await fetch("/api/generate", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         systemPrompt: systemPrompt,
+  //         userPrompts: userPrompts,
+  //       }),
+  //     });
 
-      const data = await response.json();
-      console.log("Data" + data);
-      setMealList(data);
-      console.log(mealList);
-      console.log("Meal generated successfully");
-      toast.success("Meal generated successfully!");
-    } catch (error) {
-      console.error("Error generating meal:", error);
-      toast.error("Failed to generate meal plan. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     if (!response.ok) {
+  //       throw new Error(`API request failed with status ${response.status}`);
+  //     }
+
+  //     toast.success("Meal generated successfully!");
+  //   } catch (error) {
+  //     console.error("Error generating meal:", error);
+  //     toast.error("Failed to generate meal plan. Please try again.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleSubmit = async () => {
     if (!user?.id) {
@@ -348,33 +357,46 @@ export default function EnterInformation() {
         .filter((_, index) => clickedTwo[index])
         .map((diet) => diet.tooltip);
 
-      const selectedDiningHall = dining_halls.filter(
+      const selectedMeal = dining_halls.filter(
         (_, index) => clickedHall[index]
       );
-      const selectedMeal = clickedMeal !== null ? meals[clickedMeal] : null;
+      const selectedDiningHall = clickedMeal !== null ? meals[clickedMeal] : null;
 
       await updateDoc(userDocRef, {
         allergens: selectedAllergens,
         specialDiets: selectedDiets,
-        diningHall: selectedMeal || "Yahentamitsi",
-        meals: selectedDiningHall,
+        diningHall: selectedDiningHall || "Yahentamitsi",
+        meals: selectedMeal,
       });
 
       console.log("User data updated successfully");
 
-      const response = await fetch("/api/scrape", {
+      const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           allergens: selectedAllergens,
-          diningHall: selectedMeal,
+          diningHall: selectedDiningHall,
           diets: selectedDiets,
-          meals: selectedDiningHall,
+          meals: selectedMeal,
+          calories: inputValueCalories,
+          protein: inputValueProtein,
+          fat: inputValueFat,
+          carbs: inputValueCarbs,
         }),
       });
 
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+
       const responseData = await response.json();
-      console.log("Scrape response:", responseData);
+      // console.log("API Response:", responseData.data);
+
+      setMealList(responseData.data);
+
+      // console.log("Meal list:", mealList);
+      toast.success("Meal generated successfully!");
 
       if (!responseData.data) {
         toast.error("No food data available");
@@ -383,41 +405,42 @@ export default function EnterInformation() {
       }
 
       // Transform the data to match our FoodList interface
-      const transformedFoodList: FoodList[] = Object.entries(
-        responseData.data
-      ).map(([meal, ingredients]) => {
-        // Transform ingredients data to match the Food interface
-        const formattedIngredients: Food[] = (ingredients as any[][]).map(
-          (item) => {
-            return {
-              name: item[0] || "Unknown",
-              servingSize: item[1] || "1 serving",
-              calories: item[2] || "0",
-              fats: item[3] || "0",
-              carbs: item[4] || "0",
-              protein: item[5] || "0",
-            };
-          }
-        );
+      // const transformedFoodList: FoodList[] = Object.entries(
+      //   responseData.data
+      // ).map(([meal, ingredients]) => {
+      //   // Transform ingredients data to match the Food interface
+      //   const formattedIngredients: Food[] = (ingredients as any[][]).map(
+      //     (item) => {
+      //       return {
+      //         name: item[0] || "Unknown",
+      //         servingSize: item[1] || "1 serving",
+      //         calories: item[2] || "0",
+      //         fats: item[3] || "0",
+      //         carbs: item[4] || "0",
+      //         protein: item[5] || "0",
+      //       };
+      //     }
+      //   );
 
-        return {
-          meal: meal,
-          ingredients: formattedIngredients,
-        };
-      });
+      //   return {
+      //     meal: meal,
+      //     ingredients: formattedIngredients,
+      //   };
+      // });
 
-      console.log("Transformed food list:", transformedFoodList);
-      setFoodList(transformedFoodList);
+      // console.log("Transformed food list:", transformedFoodList);
+      // setFoodList(transformedFoodList);
 
       // Wait a moment to ensure the foodList state is updated
-      setTimeout(() => {
-        generateMeal();
-      }, 1000);
+      // setTimeout(() => {
+      //   generateMeal();
+      // }, 1000);
     } catch (error) {
       console.error("Error updating user data:", error);
       toast.error("Failed to update your information. Please try again.");
     } finally {
       setLoading(false);
+      router.push("/meals");
     }
   };
 
