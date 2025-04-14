@@ -20,7 +20,7 @@ export function Navbar() {
             <div className="flex h-16 items-center justify-between mx-auto max-w-7xl px-2.5">
                 <div className="flex items-center gap-6 md:gap-10">
                     <Link href="/" className="">
-                        <span className="font-bold text-xl">MacroTerpitect</span>
+                        <span className="font-bold text-xl">MacroTerpitech</span>
                     </Link>
                     <NavigationMenu>
                         <NavigationMenuList>

@@ -71,18 +71,15 @@ export default function Home() {
     
         // Subcollection: Breakfast
         const breakfastRef = collection(docRef, 'Breakfast');
-        await setDoc(doc(breakfastRef, 'Meal 1'), { created: true });
-        await deleteDoc(doc(breakfastRef, 'Meal 1'));
+        await setDoc(doc(breakfastRef, 'Meal 2'), { created: true });
   
         // Subcollection: Lunch
         const lunchRef = collection(docRef, 'Lunch');
-        await setDoc(doc(lunchRef, 'Meal 1'), { created: true });
-        await deleteDoc(doc(lunchRef, 'Meal 1'));
+        await setDoc(doc(lunchRef, 'Meal 2'), { created: true });
   
         // Subcollection: Dinner
         const dinnerRef = collection(docRef, 'Dinner');
-        await setDoc(doc(dinnerRef, 'Meal 1'), { created: true });
-        await deleteDoc(doc(dinnerRef, 'Meal 1'));
+        await setDoc(doc(dinnerRef, 'Meal 2'), { created: true });
   
         console.log("User and meal subcollections created successfully.");
       }

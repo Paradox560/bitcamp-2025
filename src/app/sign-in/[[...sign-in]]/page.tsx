@@ -10,7 +10,7 @@ export default function SignInPage() {
                     <div>
                         <Button variant="link" asChild className="text-white p-0">
                             <Link href="/" className="text-xl tracking-wide font-medium hover:no-underline">
-                                MacroTerpitect
+                                MacroTerpitech
                             </Link>
                         </Button>
                     </div>

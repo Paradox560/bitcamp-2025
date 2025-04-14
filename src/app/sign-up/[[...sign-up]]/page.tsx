@@ -1,37 +1,19 @@
 import { SignUp } from '@clerk/nextjs'
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import Navbar from "../../components/navbar";
 
 export default function SignUpPage() {
-    return (
-        <div className="min-h-screen w-full bg-themeRed">
-            <header className="w-full bg-[#B37238] fixed left-0 top-0">
-                <div className="container mx-auto flex items-center justify-between p-4">
-                    <div>
-                        <Button variant="link" asChild className="text-white p-0">
-                            <Link href="/" className="text-xl tracking-wide font-medium hover:no-underline">
-                                MacroTerpitect
-                            </Link>
-                        </Button>
-                    </div>
-                    <div>
-                        <Button variant="ghost" asChild className="text-white hover:text-white hover:bg-white/20">
-                            <Link href="/sign-up">
-                                Sign In
-                            </Link>
-                        </Button>
-                    </div>
-                </div>
-            </header>
-            
-            <main className="container mx-auto flex flex-col items-center justify-center pt-20 pb-10 text-themeCream">
-                <h1 className="text-5xl md:text-6xl font-bold mb-8 text-center">
-                    Sign Up
-                </h1>
-                <div className="w-full max-w-md">
-                    <SignUp />
-                </div>
-            </main>
-        </div>
-    )
+    return (
+        <div className="min-h-screen w-full bg-[#E8F5E9] -mt-25">
+            <main className="container mx-auto flex flex-col items-center justify-center pt-20 pb-10 text-themeCream">
+                <h1 className="text-5xl md:text-6xl font-bold mb-8 text-center">
+                    Sign Up
+                </h1>
+                <div className="w-full flex justify-center">
+                    <SignUp />
+                </div>
+            </main>
+        </div>
+    )
 }
